@@ -1,2766 +1,1487 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#050914" />
-  <title>FT WEB2APK</title>
-
-  <style>
-    :root{
-      --cyan:#19e8ff;
-      --cyan-soft:rgba(25,232,255,.22);
-      --purple:#a66cff;
-      --purple-soft:rgba(166,108,255,.20);
-      --pink:#ff4da6;
-      --green:#25d366;
-      --white:#fff;
-      --text:#f8fafc;
-      --muted:#b9c5d6;
-
-      --panel:rgba(5,10,22,.60);
-      --panel-strong:rgba(4,9,20,.72);
-      --input:rgba(3,8,19,.58);
-      --border:rgba(110,220,255,.25);
-      --border-soft:rgba(255,255,255,.13);
-    }
-
-    *{
-      box-sizing:border-box;
-      -webkit-tap-highlight-color:transparent;
-    }
-
-    html,body{
-      margin:0;
-      padding:0;
-      min-height:100%;
-      background:#050914;
-      color:var(--text);
-      font-family:Inter,"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
-      overflow-x:hidden;
-    }
-
-    body{
-      min-height:100vh;
-      min-height:100dvh;
-    }
-
-    button,input{
-      font:inherit;
-    }
-
-    /* =========================================================
-       BACKGROUND — ONLY Back.jpg
-       ========================================================= */
-    .bg-fixed{
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100%;
-      min-height:100dvh;
-      background:#050914 url("Back.jpg") center center / cover no-repeat;
-      z-index:-2;
-      pointer-events:none;
-      transform:translateZ(0);
-    }
-
-    .bg-tint{
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100%;
-      min-height:100dvh;
-      background:rgba(2,6,18,.08);
-      z-index:-1;
-      pointer-events:none;
-    }
-
-    /* =========================================================
-       MAIN
-       ========================================================= */
-    .wrap{
-      width:min(900px,calc(100% - 28px));
-      margin:0 auto;
-      padding:30px 0 22px;
-      position:relative;
-      z-index:1;
-    }
-
-    /* =========================================================
-       HEADER
-       ========================================================= */
-    .top-header{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      text-align:center;
-      gap:11px;
-      margin-bottom:24px;
-    }
-
-    .logo-circle{
-      width:76px;
-      height:76px;
-      padding:3px;
-      border-radius:50%;
-      display:grid;
-      place-items:center;
-      background:linear-gradient(
-        135deg,
-        var(--cyan),
-        var(--purple),
-        var(--pink),
-        var(--cyan)
-      );
-      background-size:250% 250%;
-      animation:gradientFlow 7s ease infinite;
-      box-shadow:
-        0 0 20px rgba(25,232,255,.24),
-        0 8px 24px rgba(0,0,0,.30);
-    }
-
-    .logo-img{
-      width:100%;
-      height:100%;
-      display:block;
-      object-fit:cover;
-      border-radius:50%;
-      background:#030712;
-    }
-
-    .title{
-      margin:0;
-      font-size:clamp(28px,7vw,48px);
-      line-height:1;
-      font-weight:900;
-      letter-spacing:.055em;
-      text-transform:uppercase;
-      background:linear-gradient(
-        90deg,
-        #7cecff,
-        #ffffff,
-        #c99aff,
-        #ffffff,
-        #7cecff
-      );
-      background-size:260% 100%;
-      -webkit-background-clip:text;
-      background-clip:text;
-      -webkit-text-fill-color:transparent;
-      animation:titleFlow 8s ease infinite;
-      filter:drop-shadow(0 3px 10px rgba(0,0,0,.65));
-    }
-
-    .subtitle{
-      margin-top:7px;
-      color:#f1f5f9;
-      font-size:clamp(10px,2.8vw,13px);
-      line-height:1.35;
-      font-weight:750;
-      letter-spacing:.045em;
-      text-transform:uppercase;
-      text-shadow:0 2px 6px rgba(0,0,0,.95);
-    }
-
-    @keyframes gradientFlow{
-      0%,100%{
-        background-position:0% 50%;
-      }
-
-      50%{
-        background-position:100% 50%;
-      }
-    }
-
-    @keyframes titleFlow{
-      0%,100%{
-        background-position:0% 50%;
-      }
-
-      50%{
-        background-position:100% 50%;
-      }
-    }
-
-    /* =========================================================
-       CARDS
-       ========================================================= */
-    .card,
-    .progress,
-    .result,
-    .error{
-      width:100%;
-      margin-bottom:17px;
-      border-radius:20px;
-      background:var(--panel);
-      border:1px solid var(--border);
-      backdrop-filter:blur(9px);
-      -webkit-backdrop-filter:blur(9px);
-      box-shadow:
-        0 14px 34px rgba(0,0,0,.32),
-        inset 0 0 24px rgba(255,255,255,.018);
-    }
-
-    .card{
-      padding:21px;
-      transition:
-        border-color .22s ease,
-        background .22s ease,
-        box-shadow .22s ease;
-    }
-
-    .card:hover{
-      background:rgba(5,10,22,.66);
-      border-color:rgba(110,225,255,.38);
-    }
-
-    .card-details{
-      border-color:rgba(25,232,255,.28);
-    }
-
-    .card-icon{
-      border-color:rgba(166,108,255,.30);
-    }
-
-    .head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:18px;
-    }
-
-    .head-left{
-      display:flex;
-      align-items:center;
-      min-width:0;
-      gap:10px;
-    }
-
-    .num{
-      flex:0 0 auto;
-      width:31px;
-      height:31px;
-      display:grid;
-      place-items:center;
-      border-radius:9px;
-      border:1px solid var(--cyan);
-      background:rgba(25,232,255,.10);
-      color:#7cecff;
-      font-size:11px;
-      font-weight:900;
-      box-shadow:0 0 13px rgba(25,232,255,.20);
-    }
-
-    .card-icon .num{
-      border-color:var(--purple);
-      color:#d8b4fe;
-      background:rgba(166,108,255,.11);
-      box-shadow:0 0 13px rgba(166,108,255,.20);
-    }
-
-    .head h2{
-      margin:0;
-      font-size:16px;
-      font-weight:850;
-      letter-spacing:.025em;
-      text-transform:uppercase;
-      white-space:nowrap;
-      text-shadow:0 2px 5px rgba(0,0,0,.9);
-    }
-
-    .hint{
-      flex:0 1 auto;
-      color:#55dfff;
-      font-size:11px;
-      line-height:1.3;
-      font-weight:800;
-      text-align:right;
-      text-shadow:0 1px 4px rgba(0,0,0,.9);
-    }
-
-    /* =========================================================
-       FORM
-       ========================================================= */
-    .grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-    }
-
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      min-width:0;
-    }
-
-    .wide{
-      grid-column:1/-1;
-    }
-
-    .field span,
-    .url-label{
-      color:#fff;
-      font-size:11px;
-      line-height:1.2;
-      font-weight:850;
-      letter-spacing:.045em;
-      text-transform:uppercase;
-      text-shadow:0 1px 4px rgba(0,0,0,.95);
-    }
-
-    input{
-      width:100%;
-      height:45px;
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:11px;
-      outline:none;
-      padding:0 13px;
-      background:var(--input);
-      color:#fff;
-      font-size:13px;
-      font-weight:650;
-      box-shadow:inset 0 0 12px rgba(0,0,0,.10);
-      transition:
-        border-color .2s ease,
-        box-shadow .2s ease,
-        background .2s ease;
-    }
-
-    input::placeholder{
-      color:#8d9aaf;
-      font-weight:500;
-    }
-
-    input:hover{
-      border-color:rgba(25,232,255,.38);
-    }
-
-    input:focus{
-      border-color:var(--cyan);
-      background:rgba(3,9,20,.72);
-      box-shadow:
-        0 0 14px rgba(25,232,255,.16),
-        inset 0 0 10px rgba(25,232,255,.06);
-    }
-
-    /* =========================================================
-       APP ICON AREA
-       ========================================================= */
-    .icon-layout{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) 190px;
-      gap:18px;
-      align-items:stretch;
-    }
-
-    .icon-inputs-col{
-      min-width:0;
-      display:flex;
-      flex-direction:column;
-      gap:0;
-    }
-
-    .upload{
-      min-height:112px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding:14px;
-      border:1.5px dashed rgba(25,232,255,.38);
-      border-radius:15px;
-      background:rgba(2,8,18,.40);
-      cursor:pointer;
-      transition:
-        border-color .2s ease,
-        background .2s ease,
-        box-shadow .2s ease,
-        transform .2s ease;
-    }
-
-    .upload:hover{
-      border-color:var(--cyan);
-      background:rgba(25,232,255,.08);
-      box-shadow:0 0 20px rgba(25,232,255,.14);
-      transform:translateY(-1px);
-    }
-
-    .upload input{
-      display:none;
-    }
-
-    .upload-icon{
-      width:39px;
-      height:39px;
-      display:grid;
-      place-items:center;
-      margin-bottom:7px;
-      border-radius:10px;
-      color:var(--cyan);
-      border:1px solid rgba(25,232,255,.38);
-      background:rgba(25,232,255,.09);
-      box-shadow:0 0 12px rgba(25,232,255,.15);
-    }
-
-    .upload-icon svg{
-      width:21px;
-      height:21px;
-    }
-
-    .upload strong{
-      color:#fff;
-      font-size:12px;
-      font-weight:850;
-      text-shadow:0 1px 4px rgba(0,0,0,.95);
-    }
-
-    .upload span#fileName{
-      max-width:90%;
-      margin-top:3px;
-      color:#58ddff;
-      font-size:10px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .or-divider{
-      display:flex;
-      align-items:center;
-      gap:9px;
-      margin:11px 0;
-    }
-
-    .or-divider::before,
-    .or-divider::after{
-      content:"";
-      flex:1;
-      height:1px;
-      background:rgba(255,255,255,.13);
-    }
-
-    .or-divider span{
-      color:#ff6bb7;
-      font-size:10px;
-      font-weight:900;
-      letter-spacing:.12em;
-    }
-
-    .url-field{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-
-    .url-label{
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
-
-    .url-label svg{
-      width:13px;
-      height:13px;
-      color:#b99aff;
-    }
-
-    .url-input-wrap{
-      width:100%;
-    }
-
-    .icon-preview-col{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      min-width:0;
-      padding:15px 12px;
-      border-radius:17px;
-      border:1px solid rgba(166,108,255,.25);
-      background:rgba(2,7,18,.34);
-      box-shadow:inset 0 0 20px rgba(166,108,255,.035);
-    }
-
-    .preview-title{
-      margin-bottom:9px;
-      color:#8feeff;
-      font-size:10px;
-      font-weight:900;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-      text-shadow:0 0 8px rgba(25,232,255,.35);
-    }
-
-    .preview{
-      width:112px;
-      height:112px;
-      display:grid;
-      place-items:center;
-      overflow:hidden;
-      border-radius:19px;
-      border:1.5px solid var(--cyan);
-      background:rgba(2,8,19,.58);
-      box-shadow:
-        0 0 20px rgba(25,232,255,.18),
-        inset 0 0 14px rgba(25,232,255,.08);
-    }
-
-    .preview span{
-      color:#5de7ff;
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.13em;
-      text-shadow:0 0 8px rgba(25,232,255,.4);
-    }
-
-    .preview img{
-      width:100%;
-      height:100%;
-      display:block;
-      object-fit:cover;
-    }
-
-    /* =========================================================
-       BUTTONS
-       ========================================================= */
-    .action-wrap{
-      width:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      margin-top:5px;
-    }
-
-    .generate{
-      position:relative;
-      width:clamp(220px,58%,390px);
-      min-width:220px;
-      height:clamp(44px,6vw,54px);
-      padding:9px 22px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      border:1.5px solid var(--cyan);
-      border-radius:15px;
-      background:linear-gradient(
-        135deg,
-        rgba(25,232,255,.19),
-        rgba(96,110,255,.18),
-        rgba(166,108,255,.20)
-      );
-      backdrop-filter:blur(9px);
-      -webkit-backdrop-filter:blur(9px);
-      color:#fff;
-      font-size:clamp(12px,2.8vw,15px);
-      font-weight:900;
-      letter-spacing:.06em;
-      text-transform:uppercase;
-      cursor:pointer;
-      overflow:hidden;
-      box-shadow:
-        0 0 20px rgba(25,232,255,.20),
-        0 10px 25px rgba(0,0,0,.35),
-        inset 0 0 14px rgba(25,232,255,.08);
-      text-shadow:0 0 8px rgba(25,232,255,.45);
-      transition:
-        transform .2s ease,
-        border-color .2s ease,
-        box-shadow .2s ease,
-        background .2s ease;
-    }
-
-    .generate::before{
-      content:"";
-      position:absolute;
-      top:0;
-      left:-120%;
-      width:65%;
-      height:100%;
-      background:linear-gradient(
-        90deg,
-        transparent,
-        rgba(255,255,255,.28),
-        transparent
-      );
-      transform:skewX(-20deg);
-      animation:buttonShine 5s infinite;
-    }
-
-    @keyframes buttonShine{
-      0%,65%{
-        left:-120%;
-      }
-
-      100%{
-        left:160%;
-      }
-    }
-
-    .generate:hover:not(:disabled){
-      border-color:#fff;
-      background:linear-gradient(
-        135deg,
-        rgba(25,232,255,.30),
-        rgba(96,110,255,.27),
-        rgba(166,108,255,.30)
-      );
-      box-shadow:
-        0 0 28px rgba(25,232,255,.27),
-        0 0 16px rgba(166,108,255,.15),
-        inset 0 0 18px rgba(255,255,255,.10);
-      transform:translateY(-2px);
-    }
-
-    .generate:active:not(:disabled){
-      transform:scale(.98);
-    }
-
-    .generate:disabled{
-      opacity:.45;
-      cursor:not-allowed;
-    }
-
-    /* =========================================================
-       PROGRESS
-       ========================================================= */
-    .progress{
-      padding:18px;
-      display:grid;
-      grid-template-columns:auto 1fr;
-      gap:13px;
-      align-items:center;
-      border-color:rgba(25,232,255,.35);
-    }
-
-    .spinner{
-      width:33px;
-      height:33px;
-      border:3px solid rgba(255,255,255,.12);
-      border-top-color:var(--cyan);
-      border-right-color:var(--purple);
-      border-radius:50%;
-      animation:spin .75s linear infinite;
-      box-shadow:0 0 13px rgba(25,232,255,.20);
-    }
-
-    @keyframes spin{
-      to{
-        transform:rotate(360deg);
-      }
-    }
-
-    .status strong{
-      display:block;
-      color:#fff;
-      font-size:13px;
-      font-weight:850;
-    }
-
-    .status span{
-      display:block;
-      margin-top:3px;
-      color:var(--muted);
-      font-size:11px;
-      line-height:1.4;
-    }
-
-    .bar{
-      grid-column:1/-1;
-      height:5px;
-      margin-top:3px;
-      overflow:hidden;
-      border-radius:99px;
-      background:rgba(255,255,255,.10);
-    }
-
-    .bar i{
-      display:block;
-      width:3%;
-      height:100%;
-      border-radius:99px;
-      background:linear-gradient(
-        90deg,
-        var(--cyan),
-        var(--purple),
-        var(--pink)
-      );
-      box-shadow:0 0 10px rgba(25,232,255,.45);
-      transition:width .35s ease;
-    }
-
-    /* =========================================================
-       RESULT
-       ========================================================= */
-    .result{
-      padding:18px;
-      display:grid;
-      grid-template-columns:auto 1fr auto;
-      gap:13px;
-      align-items:center;
-      border-color:rgba(37,211,102,.38);
-      box-shadow:
-        0 14px 34px rgba(0,0,0,.32),
-        0 0 20px rgba(37,211,102,.10);
-    }
-
-    .check{
-      width:42px;
-      height:42px;
-      display:grid;
-      place-items:center;
-      border-radius:13px;
-      border:1px solid var(--green);
-      background:rgba(37,211,102,.12);
-      color:var(--green);
-      font-size:20px;
-      font-weight:900;
-      box-shadow:0 0 13px rgba(37,211,102,.20);
-    }
-
-    .result h2{
-      margin:0 0 4px;
-      color:#fff;
-      font-size:15px;
-      font-weight:850;
-      text-transform:uppercase;
-    }
-
-    .result p{
-      margin:0;
-      color:var(--muted);
-      font-size:11px;
-    }
-
-    .download{
-      width:auto;
-      min-width:140px;
-      height:42px;
-      padding:8px 18px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      border:1.5px solid var(--green);
-      border-radius:12px;
-      background:rgba(37,211,102,.16);
-      color:#fff;
-      text-decoration:none;
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.04em;
-      text-transform:uppercase;
-      box-shadow:0 0 15px rgba(37,211,102,.16);
-      transition:all .2s ease;
-    }
-
-    .download:hover{
-      background:rgba(37,211,102,.27);
-      box-shadow:0 0 22px rgba(37,211,102,.24);
-      transform:translateY(-1px);
-    }
-
-    /* =========================================================
-       ERROR
-       ========================================================= */
-    .error{
-      padding:18px;
-      border-color:rgba(255,77,166,.38);
-      box-shadow:
-        0 14px 34px rgba(0,0,0,.32),
-        0 0 18px rgba(255,77,166,.10);
-    }
-
-    .error strong{
-      display:block;
-      color:#ff70b8;
-      font-size:14px;
-      font-weight:850;
-      text-transform:uppercase;
-    }
-
-    .error p{
-      margin:6px 0 13px;
-      color:var(--muted);
-      font-size:11px;
-      line-height:1.45;
-    }
-
-    .retry{
-      height:38px;
-      padding:7px 18px;
-      border:1px solid var(--cyan);
-      border-radius:10px;
-      background:rgba(25,232,255,.10);
-      color:#fff;
-      font-size:11px;
-      font-weight:850;
-      text-transform:uppercase;
-      cursor:pointer;
-      transition:all .2s ease;
-    }
-
-    .retry:hover{
-      background:rgba(25,232,255,.18);
-      box-shadow:0 0 14px rgba(25,232,255,.16);
-    }
-
-    .watermark{
-      padding:21px 0 7px;
-      text-align:center;
-      color:rgba(203,213,225,.62);
-      font-size:10px;
-      font-weight:600;
-      letter-spacing:.045em;
-      text-transform:uppercase;
-      text-shadow:0 1px 3px rgba(0,0,0,.9);
-    }
-
-    .hide{
-      display:none !important;
-    }
-
-    /* =========================================================
-       WHATSAPP MODAL
-       ========================================================= */
-    .modal-overlay{
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100%;
-      min-height:100dvh;
-      display:grid;
-      place-items:center;
-      padding:15px;
-      z-index:9999;
-      background:rgba(2,6,16,.40);
-      backdrop-filter:blur(5px);
-      -webkit-backdrop-filter:blur(5px);
-      opacity:0;
-      visibility:hidden;
-      transition:opacity .22s ease,visibility .22s ease;
-    }
-
-    .modal-overlay.modal-show{
-      opacity:1;
-      visibility:visible;
-    }
-
-    .modal-overlay.modal-closing{
-      opacity:0;
-      visibility:hidden;
-    }
-
-    .modal-glass{
-      width:min(390px,calc(100% - 8px));
-      padding:25px 20px 21px;
-      text-align:center;
-      border:1.5px solid var(--cyan);
-      border-radius:20px;
-      background:rgba(5,12,26,.72);
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-      box-shadow:
-        0 0 28px rgba(25,232,255,.20),
-        0 18px 40px rgba(0,0,0,.65);
-      transform:scale(.95) translateY(8px);
-      transition:transform .22s ease;
-    }
-
-    .modal-overlay.modal-show .modal-glass{
-      transform:scale(1) translateY(0);
-    }
-
-    .modal-icon-badge{
-      width:56px;
-      height:56px;
-      margin:0 auto 13px;
-      display:grid;
-      place-items:center;
-      border-radius:17px;
-      border:1px solid var(--green);
-      background:rgba(37,211,102,.12);
-      color:var(--green);
-      box-shadow:0 0 17px rgba(37,211,102,.18);
-    }
-
-    .modal-icon-badge svg{
-      width:29px;
-      height:29px;
-    }
-
-    .modal-title{
-      margin:0 0 7px;
-      color:#fff;
-      font-size:21px;
-      font-weight:900;
-      text-transform:uppercase;
-      letter-spacing:.02em;
-      text-shadow:0 0 10px rgba(25,232,255,.25);
-    }
-
-    .modal-subtitle{
-      margin:0 0 18px;
-      color:#dbe4ef;
-      font-size:12px;
-      line-height:1.5;
-      font-weight:500;
-      text-shadow:0 1px 3px rgba(0,0,0,.85);
-    }
-
-    .modal-actions{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:9px;
-    }
-
-    .btn-whatsapp,
-    .btn-cancel{
-      width:clamp(205px,88%,305px);
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:9px;
-      border-radius:13px;
-    }
-
-    .btn-whatsapp{
-      height:46px;
-      padding:8px 15px;
-      border:1.5px solid var(--green);
-      background:rgba(37,211,102,.15);
-      color:#fff;
-      text-decoration:none;
-      font-size:12px;
-      font-weight:900;
-      letter-spacing:.025em;
-      text-transform:uppercase;
-      box-shadow:0 0 17px rgba(37,211,102,.18);
-      transition:all .2s ease;
-    }
-
-    .btn-whatsapp:hover{
-      background:rgba(37,211,102,.25);
-      box-shadow:0 0 24px rgba(37,211,102,.25);
-      transform:translateY(-1px);
-    }
-
-    .btn-cancel{
-      height:41px;
-      padding:8px 15px;
-      border:1px solid rgba(255,255,255,.23);
-      background:rgba(255,255,255,.06);
-      color:#fff;
-      font-size:11px;
-      font-weight:800;
-      cursor:pointer;
-      transition:all .2s ease;
-    }
-
-    .btn-cancel:hover{
-      border-color:var(--cyan);
-      background:rgba(255,255,255,.10);
-      box-shadow:0 0 12px rgba(25,232,255,.12);
-    }
-
-    /* =========================================================
-       RESPONSIVE
-       ========================================================= */
-
-    /* 360px phones */
-    @media (max-width:480px){
-
-      .wrap{
-        width:calc(100% - 18px);
-        padding-top:17px;
-      }
-
-      .top-header{
-        margin-bottom:17px;
-        gap:8px;
-      }
-
-      .logo-circle{
-        width:62px;
-        height:62px;
-      }
-
-      .title{
-        font-size:clamp(24px,8vw,31px);
-        letter-spacing:.045em;
-      }
-
-      .subtitle{
-        font-size:9px;
-        letter-spacing:.025em;
-      }
-
-      .card{
-        padding:16px 13px;
-        margin-bottom:13px;
-        border-radius:17px;
-      }
-
-      .head{
-        margin-bottom:14px;
-        gap:7px;
-      }
-
-      .head-left{
-        gap:8px;
-      }
-
-      .num{
-        width:28px;
-        height:28px;
-        border-radius:8px;
-        font-size:10px;
-      }
-
-      .head h2{
-        font-size:13px;
-      }
-
-      .hint{
-        font-size:8px;
-        max-width:105px;
-      }
-
-      .grid{
-        grid-template-columns:1fr;
-        gap:11px;
-      }
-
-      .wide{
-        grid-column:auto;
-      }
-
-      .field{
-        gap:5px;
-      }
-
-      .field span,
-      .url-label{
-        font-size:9px;
-      }
-
-      input{
-        height:42px;
-        border-radius:10px;
-        padding:0 11px;
-        font-size:12px;
-      }
-
-      .icon-layout{
-        grid-template-columns:1fr;
-        gap:12px;
-      }
-
-      .upload{
-        min-height:98px;
-        padding:12px;
-        border-radius:13px;
-      }
-
-      .upload-icon{
-        width:35px;
-        height:35px;
-        margin-bottom:5px;
-      }
-
-      .upload-icon svg{
-        width:19px;
-        height:19px;
-      }
-
-      .upload strong{
-        font-size:11px;
-      }
-
-      .upload span#fileName{
-        font-size:9px;
-      }
-
-      .or-divider{
-        margin:9px 0;
-      }
-
-      .or-divider span{
-        font-size:9px;
-      }
-
-      .url-field{
-        gap:5px;
-      }
-
-      .icon-preview-col{
-        min-height:145px;
-        padding:11px;
-        border-radius:15px;
-      }
-
-      .preview-title{
-        margin-bottom:7px;
-        font-size:9px;
-      }
-
-      .preview{
-        width:88px;
-        height:88px;
-        border-radius:15px;
-      }
-
-      .preview span{
-        font-size:9px;
-      }
-
-      .action-wrap{
-        margin-top:2px;
-      }
-
-      .generate{
-        width:clamp(205px,72%,275px);
-        min-width:0;
-        height:43px;
-        padding:8px 15px;
-        border-radius:13px;
-        font-size:11px;
-      }
-
-      .progress,
-      .result,
-      .error{
-        border-radius:16px;
-      }
-
-      .progress{
-        padding:14px;
-        gap:10px;
-      }
-
-      .spinner{
-        width:29px;
-        height:29px;
-      }
-
-      .status strong{
-        font-size:11px;
-      }
-
-      .status span{
-        font-size:9px;
-      }
-
-      .bar{
-        height:4px;
-      }
-
-      .result{
-        padding:14px;
-        grid-template-columns:1fr;
-        justify-items:center;
-        text-align:center;
-        gap:9px;
-      }
-
-      .download{
-        width:clamp(150px,72%,230px);
-        min-width:0;
-        height:39px;
-        font-size:10px;
-      }
-
-      .error{
-        padding:14px;
-      }
-
-      .error strong{
-        font-size:12px;
-      }
-
-      .error p{
-        font-size:10px;
-      }
-
-      .retry{
-        width:clamp(150px,72%,230px);
-        height:37px;
-        font-size:10px;
-      }
-
-      .watermark{
-        padding-top:17px;
-        font-size:8px;
-      }
-
-      .modal-glass{
-        padding:22px 16px 19px;
-        border-radius:18px;
-      }
-
-      .modal-icon-badge{
-        width:50px;
-        height:50px;
-        margin-bottom:10px;
-      }
-
-      .modal-icon-badge svg{
-        width:26px;
-        height:26px;
-      }
-
-      .modal-title{
-        font-size:18px;
-      }
-
-      .modal-subtitle{
-        font-size:10px;
-        margin-bottom:15px;
-      }
-
-      .btn-whatsapp{
-        height:43px;
-        font-size:10px;
-      }
-
-      .btn-cancel{
-        height:38px;
-        font-size:10px;
-      }
-    }
-
-    /* 481–580px */
-    @media (min-width:481px) and (max-width:580px){
-
-      .wrap{
-        width:calc(100% - 24px);
-        padding-top:21px;
-      }
-
-      .card{
-        padding:18px;
-      }
-
-      .grid{
-        grid-template-columns:1fr 1fr;
-        gap:12px;
-      }
-
-      .icon-layout{
-        grid-template-columns:minmax(0,1fr) 155px;
-        gap:13px;
-      }
-
-      .preview{
-        width:94px;
-        height:94px;
-      }
-
-      .generate{
-        width:clamp(245px,60%,340px);
-      }
-    }
-
-    /* 581–768px — intentionally larger */
-    @media (min-width:581px) and (max-width:768px){
-
-      .wrap{
-        width:min(92%,650px);
-        padding-top:25px;
-      }
-
-      .card{
-        padding:22px;
-      }
-
-      .title{
-        font-size:clamp(34px,6.5vw,44px);
-      }
-
-      .grid{
-        gap:15px;
-      }
-
-      .icon-layout{
-        grid-template-columns:minmax(0,1fr) 180px;
-      }
-
-      .preview{
-        width:108px;
-        height:108px;
-      }
-
-      .generate{
-        width:clamp(290px,65%,410px);
-        height:51px;
-      }
-    }
-
-    /* Larger screens */
-    @media (min-width:769px){
-
-      .generate{
-        width:390px;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-  <!-- ONLY LOCAL BACKGROUND IMAGE -->
-  <div class="bg-fixed" aria-hidden="true"></div>
-  <div class="bg-tint" aria-hidden="true"></div>
-
-  <!-- =========================================================
-       WHATSAPP MODAL
-       ========================================================= -->
-  <div
-    id="joinModal"
-    class="modal-overlay"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modalHeading"
-  >
-    <div class="modal-glass">
-
-      <div class="modal-icon-badge" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8.01 12.27C8.14 12.44 9.76 14.94 12.24 16C12.83 16.26 13.28 16.41 13.64 16.53C14.24 16.72 14.78 16.69 15.21 16.63C15.7 16.56 16.69 16.03 16.9 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 13.99C16.32 13.86 15.12 13.27 14.89 13.19C14.67 13.11 14.51 13.07 14.34 13.31C14.18 13.56 13.72 14.11 13.58 14.27C13.44 14.43 13.3 14.45 13.06 14.33C12.82 14.21 12.03 13.95 11.1 13.12C10.37 12.47 9.88 11.67 9.74 11.43C9.6 11.19 9.73 11.05 9.85 10.93C9.96 10.82 10.1 10.64 10.22 10.5C10.34 10.36 10.38 10.26 10.46 10.1C10.54 9.94 10.5 9.8 10.44 9.68C10.38 9.56 9.92 8.42 9.72 7.95C9.53 7.49 9.34 7.55 9.19 7.54C9.05 7.53 8.89 7.53 8.72 7.53L8.53 7.33Z"/>
-        </svg>
-      </div>
-
-      <h2 id="modalHeading" class="modal-title">
-        Connect With Us
-      </h2>
-
-      <p class="modal-subtitle">
-        Join our official WhatsApp group for real-time announcements,
-        instant updates, and builder support.
-      </p>
-
-      <div class="modal-actions">
-
-        <a
-          id="whatsappJoinBtn"
-          class="btn-whatsapp"
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#030712" />
+    <title>FT WEB2APK</title>
+    <style>
+      :root {
+        /* Cyber Neon Palette */
+        --cyan: #00f2fe;
+        --cyan-glow: rgba(0, 242, 254, 0.45);
+        --purple: #9d4edd;
+        --purple-glow: rgba(157, 78, 221, 0.38);
+        --pink: #ff007f;
+        --pink-glow: rgba(255, 0, 127, 0.4);
+        --green: #25d366;
+        --green-glow: rgba(37, 211, 102, 0.45);
+        --gold: #f5b041;
+
+        /* Cyber Anime Glassmorphism */
+        --glass-panel: rgba(4, 12, 28, 0.42);
+        --glass-panel-hover: rgba(8, 18, 38, 0.54);
+        --glass-input: rgba(3, 8, 20, 0.45);
+        --glass-border: rgba(0, 220, 255, 0.28);
+        --glass-border-bright: rgba(0, 242, 254, 0.7);
+
+        /* Crisp High-Contrast Typography */
+        --text-main: #ffffff;
+        --text-sub: #f1f5f9;
+        --text-muted: #cbd5e1;
+        --text-hint: #38bdf8;
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background-color: #030712;
+        color: var(--text-main);
+        font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+        overflow-x: hidden;
+      }
+
+      /* ==================================================
+         1. FIXED ANIME BACKGROUND (100% CLEAR & VISIBLE)
+         ================================================== */
+      .bg-fixed {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        z-index: -2;
+        overflow: hidden;
+        pointer-events: none;
+        background-color: #030712;
+      }
+
+      .bg-photo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+        display: block;
+        transform: translateZ(0);
+      }
+
+      /* Very subtle protective dark tint so anime character remains completely visible */
+      .bg-tint {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(3, 7, 18, 0.22);
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      button, input {
+        font: inherit;
+      }
+
+      /* ==================================================
+         2. MAIN LAYOUT CONTAINER
+         ================================================== */
+      .wrap {
+        width: min(860px, calc(100% - 24px));
+        margin: 0 auto;
+        padding: 34px 0 24px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ==================================================
+         3. CENTERED CYBER HEADER & GRADIENT TITLE
+         ================================================== */
+      .top-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin-bottom: 26px;
+        gap: 12px;
+      }
+
+      .logo-circle {
+        width: 78px;
+        height: 78px;
+        border-radius: 50%;
+        padding: 3px;
+        background: linear-gradient(135deg, var(--cyan), var(--pink), var(--purple), var(--cyan));
+        background-size: 300% 300%;
+        animation: gradientFlow 5s ease infinite;
+        box-shadow: 0 0 25px var(--cyan-glow);
+        display: grid;
+        place-items: center;
+      }
+
+      .logo-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+        background: #020617;
+      }
+
+      .title {
+        font-size: clamp(30px, 7.5vw, 48px);
+        margin: 0;
+        font-weight: 900;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        background: linear-gradient(
+          90deg, 
+          #00f2fe 0%, 
+          #38bdf8 20%, 
+          #ff007f 40%, 
+          #a855f7 60%, 
+          #f5b041 80%, 
+          #00f2fe 100%
+        );
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientFlow 4.5s ease-in-out infinite;
+        filter: drop-shadow(0 0 16px var(--cyan-glow));
+      }
+
+      .subtitle {
+        font-size: 13px;
+        color: var(--text-sub);
+        margin-top: 6px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+      }
+
+      @keyframes gradientFlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      /* ==================================================
+         4. GLASS HUD PANELS
+         ================================================== */
+      .card, .progress, .result, .error {
+        background: var(--glass-panel);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        border-radius: 22px;
+        margin-bottom: 20px;
+        padding: 24px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+        transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      /* Card 01 Dominant: Cyan/Purple */
+      .card-icon {
+        border-color: rgba(157, 78, 221, 0.35);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), inset 0 0 18px rgba(157, 78, 221, 0.06);
+      }
+      .card-icon:hover {
+        background: var(--glass-panel-hover);
+        border-color: rgba(157, 78, 221, 0.7);
+        box-shadow: 0 14px 45px rgba(0, 0, 0, 0.4), 0 0 25px rgba(157, 78, 221, 0.18);
+        transform: translateY(-2px);
+      }
+      .card-icon .num {
+        background: rgba(157, 78, 221, 0.2);
+        border-color: var(--purple);
+        color: #d8b4fe;
+        box-shadow: 0 0 10px var(--purple-glow);
+      }
+
+      /* Card 02 Dominant: Cyan/Blue */
+      .card-details {
+        border-color: rgba(0, 242, 254, 0.32);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), inset 0 0 18px rgba(0, 242, 254, 0.05);
+      }
+      .card-details:hover {
+        background: var(--glass-panel-hover);
+        border-color: var(--glass-border-bright);
+        box-shadow: 0 14px 45px rgba(0, 0, 0, 0.4), 0 0 25px rgba(0, 242, 254, 0.16);
+        transform: translateY(-2px);
+      }
+
+      .head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .head-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .num {
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+        background: rgba(0, 242, 254, 0.18);
+        border: 1px solid var(--cyan);
+        color: var(--cyan);
+        font-size: 12px;
+        font-weight: 900;
+        box-shadow: 0 0 10px var(--cyan-glow);
+      }
+
+      .head h2 {
+        font-size: 17px;
+        margin: 0;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+      }
+
+      .hint {
+        font-size: 12px;
+        color: var(--text-hint);
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      }
+
+      /* ==================================================
+         5. APP ICON SECTION (VERTICAL STACKED LAYOUT)
+         ================================================== */
+      .icon-vertical-flow {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+      }
+
+      /* Full Width Glass Upload Area */
+      .upload {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+        padding: 18px 14px;
+        border-radius: 16px;
+        border: 1.5px dashed rgba(0, 242, 254, 0.45);
+        background: var(--glass-input);
+        backdrop-filter: blur(8px);
+        cursor: pointer;
+        transition: all 0.25s ease;
+      }
+
+      .upload:hover {
+        border-color: var(--cyan);
+        background: rgba(0, 242, 254, 0.12);
+        box-shadow: 0 0 20px var(--cyan-glow);
+        transform: translateY(-2px);
+      }
+
+      .upload input {
+        display: none;
+      }
+
+      .upload-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(0, 242, 254, 0.12);
+        border: 1px solid rgba(0, 242, 254, 0.35);
+        color: var(--cyan);
+        display: grid;
+        place-items: center;
+        margin-bottom: 8px;
+        box-shadow: 0 0 14px var(--cyan-glow);
+        transition: all 0.25s ease;
+      }
+
+      .upload:hover .upload-icon {
+        background: rgba(0, 242, 254, 0.22);
+        border-color: var(--cyan);
+        transform: scale(1.06);
+      }
+
+      .upload strong {
+        font-size: 13px;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: 0.02em;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      }
+
+      .upload span#fileName {
+        font-size: 11px;
+        color: var(--text-hint);
+        margin-top: 4px;
+        max-width: 260px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      }
+
+      /* OR Separator */
+      .or-divider {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 4px 0;
+        position: relative;
+        width: 100%;
+      }
+
+      .or-divider::before,
+      .or-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(0, 242, 254, 0.35), transparent);
+      }
+
+      .or-divider span {
+        padding: 0 14px;
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+        color: var(--pink);
+        text-shadow: 0 0 8px var(--pink-glow);
+      }
+
+      /* Full Width Direct Image URL Input */
+      .url-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+      }
+
+      .url-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: #ffffff;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      }
+
+      .url-field input {
+        width: 100%;
+      }
+
+      /* Centered Dedicated Preview Area */
+      .preview-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 8px;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .preview-title {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--cyan);
+        text-shadow: 0 0 8px var(--cyan-glow);
+      }
+
+      .preview {
+        width: 104px;
+        height: 104px;
+        border: 1.5px solid var(--cyan);
+        border-radius: 18px;
+        background: var(--glass-input);
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        box-shadow: 0 0 18px var(--cyan-glow), inset 0 0 12px rgba(0, 242, 254, 0.12);
+        transition: all 0.25s ease;
+      }
+
+      .preview span {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        color: var(--cyan);
+        font-weight: 900;
+        text-shadow: 0 0 8px var(--cyan-glow);
+      }
+
+      .preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* ==================================================
+         6. APP DETAILS FORM GRID
+         ================================================== */
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .wide {
+        grid-column: 1 / -1;
+      }
+
+      .field span {
+        font-size: 12px;
+        color: #ffffff;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      }
+
+      input {
+        height: 48px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: var(--glass-input);
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 0 16px;
+        outline: none;
+        transition: all 0.25s ease;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+      }
+
+      input:hover {
+        border-color: rgba(0, 242, 254, 0.5);
+        background: rgba(6, 14, 30, 0.55);
+      }
+
+      input:focus {
+        border-color: var(--cyan);
+        background: rgba(8, 18, 38, 0.65);
+        box-shadow: 0 0 16px var(--cyan-glow), inset 0 0 8px rgba(0, 242, 254, 0.15);
+      }
+
+      input::placeholder {
+        color: #94a3b8;
+        font-weight: 500;
+        text-shadow: none;
+      }
+
+      /* ==================================================
+         7. GENERATE APK BUTTON (AUTO-SIZING & CYBER SHINE)
+         ================================================== */
+      .action-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin-top: 8px;
+      }
+
+      .generate {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: clamp(230px, 68%, 420px);
+        height: clamp(46px, 6.5vw, 56px);
+        padding: 10px 24px;
+        border: 1.5px solid var(--cyan);
+        border-radius: 16px;
+        background: linear-gradient(
+          135deg, 
+          rgba(0, 242, 254, 0.28) 0%, 
+          rgba(56, 189, 248, 0.2) 35%, 
+          rgba(157, 78, 221, 0.28) 70%, 
+          rgba(255, 0, 127, 0.28) 100%
+        );
+        background-size: 200% 200%;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: #ffffff;
+        font-size: clamp(13px, 3.2vw, 15px);
+        font-weight: 900;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+        box-shadow: 0 0 25px var(--cyan-glow), 0 8px 30px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(0, 242, 254, 0.15);
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        overflow: hidden;
+        text-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+      }
+
+      .generate::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -120%;
+        width: 70%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transform: skewX(-20deg);
+        animation: buttonShine 4.5s infinite;
+      }
+
+      @keyframes buttonShine {
+        0%, 65% { left: -120%; }
+        100% { left: 160%; }
+      }
+
+      .generate:hover:not(:disabled) {
+        background: linear-gradient(
+          135deg, 
+          rgba(0, 242, 254, 0.45) 0%, 
+          rgba(56, 189, 248, 0.32) 35%, 
+          rgba(157, 78, 221, 0.45) 70%, 
+          rgba(255, 0, 127, 0.45) 100%
+        );
+        border-color: #ffffff;
+        box-shadow: 0 0 35px var(--cyan-glow), 0 0 20px var(--pink-glow), inset 0 0 20px rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .generate:active:not(:disabled) {
+        transform: scale(0.98);
+      }
+
+      .generate:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* ==================================================
+         8. PROGRESS, RESULT, ERROR CARDS
+         ================================================== */
+      .progress {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 15px;
+        align-items: center;
+        border-color: rgba(0, 242, 254, 0.45);
+      }
+
+      .spinner {
+        width: 34px;
+        height: 34px;
+        border: 3px solid rgba(255, 255, 255, 0.15);
+        border-top-color: var(--cyan);
+        border-right-color: var(--pink);
+        border-radius: 50%;
+        animation: spin 0.75s linear infinite;
+        box-shadow: 0 0 14px var(--cyan-glow);
+      }
+
+      .status strong {
+        display: block;
+        font-size: 14px;
+        font-weight: 800;
+        color: #ffffff;
+      }
+
+      .status span {
+        display: block;
+        color: var(--text-muted);
+        font-size: 12px;
+        margin-top: 3px;
+      }
+
+      .bar {
+        grid-column: 1 / -1;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 99px;
+        overflow: hidden;
+        margin-top: 6px;
+      }
+
+      .bar i {
+        display: block;
+        height: 100%;
+        width: 3%;
+        background: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+        border-radius: 99px;
+        box-shadow: 0 0 12px var(--cyan);
+        transition: width 0.35s ease;
+      }
+
+      .result {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 14px;
+        align-items: center;
+        border-color: rgba(37, 211, 102, 0.5);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), 0 0 25px var(--green-glow);
+      }
+
+      .check {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: rgba(37, 211, 102, 0.2);
+        color: var(--green);
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        font-size: 20px;
+        border: 1px solid var(--green);
+        box-shadow: 0 0 14px var(--green-glow);
+      }
+
+      .result h2 {
+        font-size: 16px;
+        margin: 0 0 4px;
+        color: #ffffff;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .result p {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin: 0;
+      }
+
+      .download {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: clamp(140px, auto, 220px);
+        height: clamp(40px, 5.5vw, 48px);
+        padding: 8px 20px;
+        border-radius: 12px;
+        border: 1.5px solid var(--green);
+        background: linear-gradient(135deg, rgba(37, 211, 102, 0.35), rgba(0, 242, 254, 0.25));
+        backdrop-filter: blur(8px);
+        color: #ffffff;
+        text-decoration: none;
+        font-size: clamp(12px, 2.8vw, 13px);
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        box-shadow: 0 0 18px var(--green-glow);
+        transition: all 0.2s ease;
+      }
+
+      .download:hover {
+        background: linear-gradient(135deg, rgba(37, 211, 102, 0.55), rgba(0, 242, 254, 0.4));
+        transform: translateY(-2px);
+        box-shadow: 0 0 28px var(--green-glow);
+      }
+
+      .error {
+        border-color: rgba(255, 0, 127, 0.5);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), 0 0 22px var(--pink-glow);
+      }
+
+      .error strong {
+        font-size: 15px;
+        color: #ff3366;
+        display: block;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .error p {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin: 6px 0 14px;
+      }
+
+      .retry {
+        border: 1.5px solid var(--cyan);
+        background: rgba(0, 242, 254, 0.2);
+        color: #ffffff;
+        border-radius: 10px;
+        padding: 9px 20px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .retry:hover {
+        background: rgba(0, 242, 254, 0.35);
+        box-shadow: 0 0 16px var(--cyan-glow);
+      }
+
+      .watermark {
+        text-align: center;
+        color: rgba(203, 213, 225, 0.65);
+        font-size: 11px;
+        padding: 24px 0 8px;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+        text-transform: uppercase;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      }
+
+      .hide {
+        display: none !important;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* ==================================================
+         9. WHATSAPP POPUP MODAL (CYBER GLASS)
+         ================================================== */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        background: rgba(2, 6, 16, 0.45);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        display: grid;
+        place-items: center;
+        padding: 16px;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+      }
+
+      .modal-overlay.modal-show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .modal-overlay.modal-closing {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .modal-glass {
+        width: min(400px, calc(100% - 16px));
+        background: rgba(5, 12, 26, 0.65);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1.5px solid var(--cyan);
+        border-radius: 22px;
+        padding: 28px 22px 24px;
+        box-shadow: 0 0 35px var(--cyan-glow), 0 20px 40px rgba(0, 0, 0, 0.7);
+        text-align: center;
+        transform: scale(0.94) translateY(10px);
+        transition: transform 0.25s ease;
+      }
+
+      .modal-overlay.modal-show .modal-glass {
+        transform: scale(1) translateY(0);
+      }
+
+      .modal-icon-badge {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 14px;
+        border-radius: 18px;
+        background: rgba(37, 211, 102, 0.2);
+        border: 1px solid var(--green);
+        display: grid;
+        place-items: center;
+        color: var(--green);
+        box-shadow: 0 0 20px var(--green-glow);
+      }
+
+      .modal-icon-badge svg {
+        width: 32px;
+        height: 32px;
+      }
+
+      .modal-title {
+        font-size: 22px;
+        font-weight: 900;
+        margin: 0 0 8px;
+        color: #ffffff;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        text-shadow: 0 0 10px var(--cyan-glow);
+      }
+
+      .modal-subtitle {
+        font-size: 13px;
+        color: #e2e8f0;
+        margin: 0 0 20px;
+        line-height: 1.5;
+        font-weight: 500;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      }
+
+      .modal-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .btn-whatsapp {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: clamp(210px, 88%, 310px);
+        height: clamp(44px, 6vw, 50px);
+        padding: 8px 16px;
+        border-radius: 14px;
+        border: 1.5px solid var(--green);
+        background: linear-gradient(135deg, rgba(37, 211, 102, 0.35), rgba(0, 242, 254, 0.2));
+        backdrop-filter: blur(8px);
+        color: #ffffff;
+        text-decoration: none;
+        font-size: clamp(13px, 3vw, 14px);
+        font-weight: 900;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        box-shadow: 0 0 20px var(--green-glow);
+        transition: all 0.2s ease;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+      }
+
+      .btn-whatsapp:hover {
+        background: linear-gradient(135deg, rgba(37, 211, 102, 0.55), rgba(0, 242, 254, 0.35));
+        box-shadow: 0 0 28px var(--green-glow);
+        transform: translateY(-2px);
+      }
+
+      .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: clamp(210px, 88%, 310px);
+        height: clamp(40px, 5.5vw, 46px);
+        padding: 8px 16px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(8px);
+        color: #ffffff;
+        font-size: clamp(12px, 2.8vw, 13px);
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .btn-cancel:hover {
+        background: rgba(255, 255, 255, 0.18);
+        border-color: var(--cyan);
+        box-shadow: 0 0 12px var(--cyan-glow);
+      }
+
+      /* ==================================================
+         10. RESPONSIVE BREAKPOINTS (360px & 580px)
+         ================================================== */
+      /* 360px – 480px Mobile Layout */
+      @media (max-width: 580px) {
+        .wrap {
+          padding-top: 20px;
+        }
+        .card {
+          padding: 18px 16px;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+        .wide {
+          grid-column: auto;
+        }
+        .preview {
+          width: 96px;
+          height: 96px;
+        }
+        .result {
+          grid-template-columns: 1fr;
+          justify-items: center;
+          text-align: center;
+        }
+        .download {
+          width: 100%;
+          max-width: 260px;
+        }
+        .error .retry {
+          width: 100%;
+          max-width: 260px;
+        }
+      }
+
+      /* 580px – 768px Phablet/Medium Screens */
+      @media (min-width: 581px) and (max-width: 768px) {
+        .wrap {
+          width: min(92%, 620px);
+        }
+        .card {
+          padding: 22px;
+        }
+        .generate {
+          width: clamp(280px, 72%, 400px);
+          height: 50px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Guaranteed Visible Anime Background with Direct Raw Fallback -->
+    <div class="bg-fixed" aria-hidden="true">
+      <img 
+        id="mainBgImg" 
+        class="bg-photo" 
+        src="https://raw.githubusercontent.com/Devile146/Lullu/ef76c323dd24c29d5886bfb524d8ff2590ea4a3d/Back.jpg" 
+        alt="Background" 
+      />
+    </div>
+    <div class="bg-tint" aria-hidden="true"></div>
+
+    <!-- WhatsApp Join Modal Popup -->
+    <div id="joinModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalHeading">
+      <div class="modal-glass">
+        <div class="modal-icon-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8.01 12.27C8.14 12.44 9.76 14.94 12.24 16C12.83 16.26 13.28 16.41 13.64 16.53C14.24 16.72 14.78 16.69 15.21 16.63C15.7 16.56 16.69 16.03 16.9 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 13.99C16.32 13.86 15.12 13.27 14.89 13.19C14.67 13.11 14.51 13.07 14.34 13.31C14.18 13.56 13.72 14.11 13.58 14.27C13.44 14.43 13.3 14.45 13.06 14.33C12.82 14.21 12.03 13.95 11.1 13.12C10.37 12.47 9.88 11.67 9.74 11.43C9.6 11.19 9.73 11.05 9.85 10.93C9.96 10.82 10.1 10.64 10.22 10.5C10.34 10.36 10.38 10.26 10.46 10.1C10.54 9.94 10.5 9.8 10.44 9.68C10.38 9.56 9.92 8.42 9.72 7.95C9.53 7.49 9.34 7.55 9.19 7.54C9.05 7.53 8.89 7.53 8.72 7.53L8.53 7.33Z"/>
           </svg>
-          <span>Join WhatsApp Group</span>
-        </a>
-
-        <button
-          id="modalCancelBtn"
-          class="btn-cancel"
-          type="button"
-        >
-          Cancel
-        </button>
-
+        </div>
+        <h2 id="modalHeading" class="modal-title">Connect With Us</h2>
+        <p class="modal-subtitle">Join our official WhatsApp group for real-time announcements, instant updates, and builder support.</p>
+        <div class="modal-actions">
+          <a id="whatsappJoinBtn" class="btn-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8.01 12.27C8.14 12.44 9.76 14.94 12.24 16C12.83 16.26 13.28 16.41 13.64 16.53C14.24 16.72 14.78 16.69 15.21 16.63C15.7 16.56 16.69 16.03 16.9 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 13.99C16.32 13.86 15.12 13.27 14.89 13.19C14.67 13.11 14.51 13.07 14.34 13.31C14.18 13.56 13.72 14.11 13.58 14.27C13.44 14.43 13.3 14.45 13.06 14.33C12.82 14.21 12.03 13.95 11.1 13.12C10.37 12.47 9.88 11.67 9.74 11.43C9.6 11.19 9.73 11.05 9.85 10.93C9.96 10.82 10.1 10.64 10.22 10.5C10.34 10.36 10.38 10.26 10.46 10.1C10.54 9.94 10.5 9.8 10.44 9.68C10.38 9.56 9.92 8.42 9.72 7.95C9.53 7.49 9.34 7.55 9.19 7.54C9.05 7.53 8.89 7.53 8.72 7.53L8.53 7.33Z"/>
+          </svg>
+        </div>
+        <h2 id="modalHeading" class="modal-title">Connect With Us</h2>
+        <p class="modal-subtitle">Join our official WhatsApp group for real-time announcements, instant updates, and builder support.</p>
+        <div class="modal-actions">
+          <a id="whatsappJoinBtn" class="btn-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8.01 12.27C8.14 12.44 9.76 14.94 12.24 16C12.83 16.26 13.28 16.41 13.64 16.53C14.24 16.72 14.78 16.69 15.21 16.63C15.7 16.56 16.69 16.03 16.9 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 13.99C16.32 13.86 15.12 13.27 14.89 13.19C14.67 13.11 14.51 13.07 14.34 13.31C14.18 13.56 13.72 14.11 13.58 14.27C13.44 14.43 13.3 14.45 13.06 14.33C12.82 14.21 12.03 13.95 11.1 13.12C10.37 12.47 9.88 11.67 9.74 11.43C9.6 11.19 9.73 11.05 9.85 10.93C9.96 10.82 10.1 10.64 10.22 10.5C10.34 10.36 10.38 10.26 10.46 10.1C10.54 9.94 10.5 9.8 10.44 9.68C10.38 9.56 9.92 8.42 9.72 7.95C9.53 7.49 9.34 7.55 9.19 7.54C9.05 7.53 8.89 7.53 8.72 7.53L8.53 7.33Z"/>
+            </svg>
+            <span>Join WhatsApp Group</span>
+          </a>
+          <button id="modalCancelBtn" class="btn-cancel" type="button">Cancel</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- =========================================================
-       MAIN CONTENT
-       ========================================================= -->
-  <main class="wrap" id="mainWrap">
-
-    <header class="top-header">
-
-      <div class="logo-circle">
-        <img
-          id="logoImg"
-          class="logo-img"
-          src="https://raw.githubusercontent.com/Devile146/Lullu/99eaa8197cb251f631d5f0d3b0e965720a10a961/Icon.jpg"
-          alt="FT Logo"
-        />
-      </div>
-
-      <div>
-        <h1 class="title">FT WEB2APK</h1>
-
-        <div class="subtitle">
-          Professional Web2APK Builder Website → APK
+    <!-- Main Content Wrap -->
+    <main class="wrap" id="mainWrap">
+      <!-- Centered Header with Animated Gradient Title -->
+      <header class="top-header">
+        <div class="logo-circle">
+          <img 
+            id="logoImg"
+            class="logo-img"
+            src="https://raw.githubusercontent.com/Devile146/Lullu/99eaa8197cb251f631d5f0d3b0e965720a10a961/Icon.jpg" 
+            alt="FT Logo" 
+          />
         </div>
-      </div>
+        <div>
+          <h1 class="title">FT WEB2APK</h1>
+          <div class="subtitle">Professional Web2apk Builder Website → Apk</div>
+        </div>
+      </header>
 
-    </header>
-
-    <!-- =======================================================
-         APP DETAILS
-         ======================================================= -->
-    <section class="card card-details">
-
-      <div class="head">
-
-        <div class="head-left">
-          <div class="num">01</div>
-          <h2>App Details</h2>
+      <!-- 1. APP ICON SECTION (FIRST POSITION & VERTICALLY STACKED) -->
+      <section class="card card-icon">
+        <div class="head">
+          <div class="head-left">
+            <div class="num">01</div>
+            <h2>App Icon</h2>
+          </div>
+          <div class="hint">PNG · JPG · WebP · Max 5MB</div>
         </div>
 
-        <div class="hint">
-          All fields required
-        </div>
-
-      </div>
-
-      <div class="grid">
-
-        <label class="field">
-          <span>App Name</span>
-          <input
-            id="name"
-            placeholder="Your App Name"
-            autocomplete="off"
-          />
-        </label>
-
-        <label class="field">
-          <span>Package Name</span>
-          <input
-            id="pkg"
-            placeholder="com.example.app"
-            autocomplete="off"
-          />
-        </label>
-
-        <label class="field">
-          <span>Version</span>
-          <input
-            id="ver"
-            value="1.0.0"
-          />
-        </label>
-
-        <label class="field">
-          <span>Version Code</span>
-          <input
-            id="code"
-            type="number"
-            min="1"
-            value="1"
-          />
-        </label>
-
-        <label class="field wide">
-          <span>Website URL</span>
-          <input
-            id="site"
-            type="url"
-            placeholder="https://example.com"
-            autocomplete="url"
-          />
-        </label>
-
-      </div>
-    </section>
-
-    <!-- =======================================================
-         APP ICON
-         ======================================================= -->
-    <section class="card card-icon">
-
-      <div class="head">
-
-        <div class="head-left">
-          <div class="num">02</div>
-          <h2>App Icon</h2>
-        </div>
-
-        <div class="hint">
-          PNG · JPG · WebP · Max 5MB
-        </div>
-
-      </div>
-
-      <div class="icon-layout">
-
-        <!-- Upload + URL -->
-        <div class="icon-inputs-col">
-
+        <div class="icon-vertical-flow">
+          <!-- 1. Full-Width Upload Area -->
           <label class="upload" for="file">
-
-            <input
-              id="file"
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-            />
-
+            <input id="file" type="file" accept="image/png,image/jpeg,image/webp" />
             <div class="upload-icon">
-
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="17 8 12 3 7 8"/>
                 <line x1="12" y1="3" x2="12" y2="15"/>
               </svg>
-
             </div>
-
-            <strong>
-              Upload Icon File
-            </strong>
-
-            <span id="fileName">
-              Choose icon file
-            </span>
-
+            <strong>Upload Icon File</strong>
+            <span id="fileName">Choose icon file</span>
           </label>
 
+          <!-- 2. OR Separator -->
           <div class="or-divider">
             <span>OR</span>
           </div>
 
+          <!-- 3. Full-Width Direct Image URL Input -->
           <label class="url-field">
-
             <span class="url-label">
-
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                 <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
               </svg>
-
               Direct Image URL
-
             </span>
-
-            <div class="url-input-wrap">
-
-              <input
-                id="iconUrl"
-                type="url"
-                placeholder="https://example.com/icon.png"
-              />
-
-            </div>
-
+            <input id="iconUrl" type="url" placeholder="https://example.com/icon.png" />
           </label>
 
-        </div>
-
-        <!-- Separate Preview -->
-        <div class="icon-preview-col">
-
-          <span class="preview-title">
-            Live Preview
-          </span>
-
-          <div
-            class="preview"
-            id="preview"
-          >
-            <span>ICON</span>
+          <!-- 4. Centered Live Preview -->
+          <div class="preview-wrap">
+            <span class="preview-title">Live Preview</span>
+            <div class="preview" id="preview">
+              <span>ICON</span>
+            </div>
           </div>
-
         </div>
+      </section>
 
+      <!-- 2. APP DETAILS SECTION (SECOND POSITION) -->
+      <section class="card card-details">
+        <div class="head">
+          <div class="head-left">
+            <div class="num">02</div>
+            <h2>App Details</h2>
+          </div>
+          <div class="hint">All fields required</div>
+        </div>
+        <div class="grid">
+          <label class="field">
+            <span>App Name</span>
+            <input id="name" placeholder="Your App Name" autocomplete="off" />
+          </label>
+          <label class="field">
+            <span>Package Name</span>
+            <input id="pkg" placeholder="com.example.app" autocomplete="off" />
+          </label>
+          <label class="field">
+            <span>Version</span>
+            <input id="ver" value="1.0.0" />
+          </label>
+          <label class="field">
+            <span>Version Code</span>
+            <input id="code" type="number" min="1" value="1" />
+          </label>
+          <label class="field wide">
+            <span>Website URL</span>
+            <input id="site" type="url" placeholder="https://example.com" autocomplete="url" />
+          </label>
+        </div>
+      </section>
+
+      <!-- 3. BUILD PROGRESS CARD -->
+      <section id="progress" class="progress hide">
+        <div class="spinner"></div>
+        <div class="status">
+          <strong id="statusTitle">Building APK…</strong>
+          <span id="statusText">Submitting your app to FT Web2APK.</span>
+        </div>
+        <div class="bar">
+          <i id="bar"></i>
+        </div>
+      </section>
+
+      <!-- 4. SUCCESS RESULT CARD -->
+      <section id="result" class="result hide">
+        <div class="check">✓</div>
+        <div>
+          <h2>APK Ready</h2>
+          <p id="resultText">Your APK is ready.</p>
+        </div>
+        <a id="download" class="download" href="#" target="_blank" rel="noopener">Download APK</a>
+      </section>
+
+      <!-- 5. ERROR CARD -->
+      <section id="error" class="error hide">
+        <strong>APK Generation Failed</strong>
+        <p id="errorText"></p>
+        <button id="retry" class="retry" type="button">Try Again</button>
+      </section>
+
+      <!-- 6. GENERATE APK BUTTON (CENTERED & RESPONSIVE AUTO-SIZE) -->
+      <div class="action-wrap">
+        <button id="generate" class="generate" type="button">Generate APK</button>
       </div>
-    </section>
 
-    <!-- =======================================================
-         PROGRESS
-         ======================================================= -->
-    <section
-      id="progress"
-      class="progress hide"
-    >
+      <footer class="watermark">
+        © 2026 Dev TECHNICAL FAHAD All Rights Reserved
+      </footer>
+    </main>
 
-      <div class="spinner"></div>
+    <script>
+      (() => {
+        "use strict";
 
-      <div class="status">
-
-        <strong id="statusTitle">
-          Building APK…
-        </strong>
-
-        <span id="statusText">
-          Submitting your app to FT Web2APK.
-        </span>
-
-      </div>
-
-      <div class="bar">
-        <i id="bar"></i>
-      </div>
-
-    </section>
-
-    <!-- =======================================================
-         RESULT
-         ======================================================= -->
-    <section
-      id="result"
-      class="result hide"
-    >
-
-      <div class="check">
-        ✓
-      </div>
-
-      <div>
-
-        <h2>
-          APK Ready
-        </h2>
-
-        <p id="resultText">
-          Your APK is ready.
-        </p>
-
-      </div>
-
-      <a
-        id="download"
-        class="download"
-        href="#"
-        target="_blank"
-        rel="noopener"
-      >
-        Download APK
-      </a>
-
-    </section>
-
-    <!-- =======================================================
-         ERROR
-         ======================================================= -->
-    <section
-      id="error"
-      class="error hide"
-    >
-
-      <strong>
-        APK Generation Failed
-      </strong>
-
-      <p id="errorText"></p>
-
-      <button
-        id="retry"
-        class="retry"
-        type="button"
-      >
-        Try Again
-      </button>
-
-    </section>
-
-    <!-- =======================================================
-         GENERATE
-         ======================================================= -->
-    <div class="action-wrap">
-
-      <button
-        id="generate"
-        class="generate"
-        type="button"
-      >
-        Generate APK
-      </button>
-
-    </div>
-
-    <footer class="watermark">
-      © 2026 Dev TECHNICAL FAHAD All Rights Reserved
-    </footer>
-
-  </main>
-
-  <!-- =========================================================
-       JAVASCRIPT
-       API / BUILD LOGIC PRESERVED
-       ========================================================= -->
-  <script>
-    (() => {
-      "use strict";
-
-      const CONFIG = {
-        WHATSAPP_GROUP_URL:
-          "https://chat.whatsapp.com/BDdh6Q1YyjpLJaqjjMATyS?s=cl&p=a&mlu=4&ilr=4",
-
-        API_URL:
-          "https://ft-web2apk.ftshehryar10044.workers.dev/api"
-      };
-
-      const $ = (id) =>
-        document.getElementById(id);
-
-      /* =======================================================
-         LOGO FALLBACK
-         ======================================================= */
-
-      const logoImg = $("logoImg");
-
-      if (logoImg) {
-
-        const logoSources = [
-
-          "https://raw.githubusercontent.com/Devile146/Lullu/99eaa8197cb251f631d5f0d3b0e965720a10a961/Icon.jpg",
-
-          "https://github.com/Devile146/Lullu/raw/99eaa8197cb251f631d5f0d3b0e965720a10a961/Icon.jpg",
-
-          "Icon.jpg"
-
-        ];
-
-        let logoIdx = 0;
-
-        logoImg.onerror = () => {
-
-          logoIdx++;
-
-          if (logoIdx < logoSources.length) {
-            logoImg.src =
-              logoSources[logoIdx];
-          }
-
+        /* ==================================================
+           CONFIG & DOM SELECTORS (PRESERVED)
+           ================================================== */
+        const CONFIG = {
+          WHATSAPP_GROUP_URL: "https://chat.whatsapp.com/BDdh6Q1YyjpLJaqjjMATyS?s=cl&p=a&mlu=4&ilr=4",
+          API_URL: "https://ft-web2apk.ftshehryar10044.workers.dev/api"
         };
-      }
 
-      /* =======================================================
-         ELEMENTS
-         ======================================================= */
+        const $ = (id) => document.getElementById(id);
 
-      const name = $("name");
-      const pkg = $("pkg");
-      const ver = $("ver");
-      const code = $("code");
-      const site = $("site");
-      const file = $("file");
-      const iconUrl = $("iconUrl");
-      const preview = $("preview");
-      const generate = $("generate");
-      const progress = $("progress");
-      const result = $("result");
-      const error = $("error");
-      const bar = $("bar");
-      const statusTitle = $("statusTitle");
-      const statusText = $("statusText");
-      const download = $("download");
+        /* Bulletproof Background Image Fallback System */
+        const bgImg = $('mainBgImg');
+        if (bgImg) {
+          const bgSources = [
+            "https://raw.githubusercontent.com/Devile146/Lullu/ef76c323dd24c29d5886bfb524d8ff2590ea4a3d/Back.jpg",
+            "https://github.com/Devile146/Lullu/raw/ef76c323dd24c29d5886bfb524d8ff2590ea4a3d/Back.jpg",
+            "https://raw.githubusercontent.com/Devile146/Lullu/main/Back.jpg",
+            "Back.jpg",
+            "Back.jp"
+          ];
+          let bgIdx = 0;
+          bgImg.onerror = () => {
+            bgIdx++;
+            if (bgIdx < bgSources.length) {
+              bgImg.src = bgSources[bgIdx];
+            }
+          };
+        }
 
-      const joinModal = $("joinModal");
-      const whatsappJoinBtn =
-        $("whatsappJoinBtn");
-      const modalCancelBtn =
-        $("modalCancelBtn");
+        /* Logo Image Fallback */
+        const logoImg = $('logoImg');
+        if (logoImg) {
+          const logoSources = [
+            "https://raw.githubusercontent.com/Devile146/Lullu/99eaa8197cb251f631d5f0d3b0e965720a10a961/Icon.jpg",
+            "https://github.com/Devile146/Lullu/raw/99eaa8197cb251f631d5f0d3b0e965720a10a961/Icon.jpg",
+            "https://raw.githubusercontent.com/Devile146/Lullu/main/Icon.jpg",
+            "Icon.jpg"
+          ];
+          let logoIdx = 0;
+          logoImg.onerror = () => {
+            logoIdx++;
+            if (logoIdx < logoSources.length) {
+              logoImg.src = logoSources[logoIdx];
+            }
+          };
+        }
 
-      let iconData = "";
-      let busy = false;
-      let pollTimer = null;
-      let progressValue = 3;
+        /* Form Inputs */
+        const name = $('name'),
+          pkg = $('pkg'),
+          ver = $('ver'),
+          code = $('code'),
+          site = $('site'),
+          file = $('file'),
+          iconUrl = $('iconUrl'),
+          preview = $('preview'),
+          generate = $('generate'),
+          progress = $('progress'),
+          result = $('result'),
+          error = $('error'),
+          bar = $('bar'),
+          statusTitle = $('statusTitle'),
+          statusText = $('statusText'),
+          download = $('download');
 
-      /* =======================================================
-         HELPERS
-         ======================================================= */
+        /* WhatsApp Modal Dialog */
+        const joinModal = $('joinModal'),
+          whatsappJoinBtn = $('whatsappJoinBtn'),
+          modalCancelBtn = $('modalCancelBtn');
 
-      const show = (element, value) => {
-        element.classList.toggle(
-          "hide",
-          !value
-        );
-      };
+        let iconData = "",
+          busy = false,
+          pollTimer = null,
+          progressValue = 3;
 
-      const packageOk = (value) =>
-        /^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$/
-          .test(value);
+        const show = (e, v) => e.classList.toggle('hide', !v);
+        const packageOk = (v) => /^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$/.test(v);
+        const normalize = (v) => /^https?:\/\//i.test(v.trim()) ? v.trim() : 'https://' + v.trim();
 
-      const normalize = (value) =>
-        /^https?:\/\//i.test(
-          value.trim()
-        )
-          ? value.trim()
-          : "https://" + value.trim();
+        /* WhatsApp Join Handler */
+        whatsappJoinBtn.href = CONFIG.WHATSAPP_GROUP_URL;
 
-      /* =======================================================
-         WHATSAPP MODAL
-         ======================================================= */
+        function openModal() {
+          joinModal.classList.add('modal-show');
+        }
 
-      whatsappJoinBtn.href =
-        CONFIG.WHATSAPP_GROUP_URL;
+        function closeModal() {
+          joinModal.classList.add('modal-closing');
+          joinModal.classList.remove('modal-show');
+          setTimeout(() => {
+            joinModal.classList.remove('modal-closing');
+            joinModal.classList.add('hide');
+          }, 240);
+        }
 
-      function openModal() {
-        joinModal.classList.add(
-          "modal-show"
-        );
-      }
+        modalCancelBtn.addEventListener('click', closeModal);
 
-      function closeModal() {
-
-        joinModal.classList.add(
-          "modal-closing"
-        );
-
-        joinModal.classList.remove(
-          "modal-show"
-        );
-
-        setTimeout(() => {
-
-          joinModal.classList.remove(
-            "modal-closing"
-          );
-
-          joinModal.classList.add(
-            "hide"
-          );
-
-        }, 240);
-      }
-
-      modalCancelBtn.addEventListener(
-        "click",
-        closeModal
-      );
-
-      window.addEventListener(
-        "keydown",
-        (event) => {
-
-          if (
-            event.key === "Escape" &&
-            !joinModal.classList.contains(
-              "hide"
-            )
-          ) {
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && !joinModal.classList.contains('hide')) {
             closeModal();
           }
+        });
 
+        window.addEventListener('DOMContentLoaded', () => {
+          setTimeout(openModal, 60);
+        });
+
+        /* ==================================================
+           WORKING APK GENERATION LOGIC (PRESERVED)
+           ================================================== */
+        function setBar(v) {
+          progressValue = Math.max(3, Math.min(98, v));
+          bar.style.width = progressValue + '%';
         }
-      );
 
-      window.addEventListener(
-        "DOMContentLoaded",
-        () => {
-          setTimeout(
-            openModal,
-            60
-          );
+        function reset() {
+          show(result, false);
+          show(error, false);
+          download.removeAttribute('href');
+          setBar(3);
         }
-      );
 
-      /* =======================================================
-         PROGRESS
-         ======================================================= */
+        function previewImage(src) {
+          preview.innerHTML = '';
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = 'Icon preview';
+          img.onerror = () => {
+            preview.innerHTML = '<span>ICON</span>';
+          };
+          preview.appendChild(img);
+        }
 
-      function setBar(value) {
+        function dataUri(f) {
+          return new Promise((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = () => resolve(String(r.result));
+            r.onerror = reject;
+            r.readAsDataURL(f);
+          });
+        }
 
-        progressValue =
-          Math.max(
-            3,
-            Math.min(
-              98,
-              value
-            )
-          );
-
-        bar.style.width =
-          progressValue + "%";
-      }
-
-      function reset() {
-
-        show(result, false);
-        show(error, false);
-
-        download.removeAttribute(
-          "href"
-        );
-
-        setBar(3);
-      }
-
-      /* =======================================================
-         PREVIEW
-         ======================================================= */
-
-      function previewImage(src) {
-
-        preview.innerHTML = "";
-
-        const img =
-          document.createElement("img");
-
-        img.src = src;
-        img.alt = "Icon preview";
-
-        img.onerror = () => {
-          preview.innerHTML =
-            "<span>ICON</span>";
-        };
-
-        preview.appendChild(img);
-      }
-
-      function dataUri(fileObject) {
-
-        return new Promise(
-          (resolve, reject) => {
-
-            const reader =
-              new FileReader();
-
-            reader.onload = () =>
-              resolve(
-                String(
-                  reader.result
-                )
-              );
-
-            reader.onerror =
-              reject;
-
-            reader.readAsDataURL(
-              fileObject
-            );
-
+        file.addEventListener('change', async () => {
+          const f = file.files?.[0];
+          if (!f) return;
+          if (!['image/png', 'image/jpeg', 'image/webp'].includes(f.type) || f.size > 5 * 1024 * 1024) {
+            file.value = '';
+            iconData = '';
+            $('fileName').textContent = 'Choose icon file';
+            return alert('Select a PNG, JPG, or WebP image up to 5MB.');
           }
-        );
-      }
+          iconData = await dataUri(f);
+          iconUrl.value = '';
+          $('fileName').textContent = f.name;
+          previewImage(iconData);
+        });
 
-      /* =======================================================
-         FILE UPLOAD
-         ======================================================= */
+        iconUrl.addEventListener('input', () => {
+          const v = iconUrl.value.trim();
+          if (!v) return;
+          iconData = '';
+          previewImage(v);
+        });
 
-      file.addEventListener(
-        "change",
-        async () => {
-
-          const selected =
-            file.files?.[0];
-
-          if (!selected) return;
-
-          if (
-            ![
-              "image/png",
-              "image/jpeg",
-              "image/webp"
-            ].includes(
-              selected.type
-            ) ||
-            selected.size >
-              5 * 1024 * 1024
-          ) {
-
-            file.value = "";
-            iconData = "";
-
-            $("fileName").textContent =
-              "Choose icon file";
-
-            return alert(
-              "Select a PNG, JPG, or WebP image up to 5MB."
-            );
+        function extractId(d) {
+          for (const k of ['buildId', 'build_id', 'projectId', 'id', 'uuid']) {
+            if (d && typeof d[k] === 'string' && /^[a-f0-9]{8}-[a-f0-9-]{27}$/i.test(d[k])) return d[k];
           }
-
-          iconData =
-            await dataUri(
-              selected
-            );
-
-          iconUrl.value = "";
-
-          $("fileName").textContent =
-            selected.name;
-
-          previewImage(
-            iconData
-          );
-
+          const s = JSON.stringify(d || {}).match(/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/i);
+          return s ? s[0] : '';
         }
-      );
 
-      iconUrl.addEventListener(
-        "input",
-        () => {
-
-          const value =
-            iconUrl.value.trim();
-
-          if (!value) return;
-
-          iconData = "";
-
-          previewImage(
-            value
-          );
-
-        }
-      );
-
-      /* =======================================================
-         API RESPONSE HELPERS
-         ======================================================= */
-
-      function extractId(data) {
-
-        for (
-          const key of [
-            "buildId",
-            "build_id",
-            "projectId",
-            "id",
-            "uuid"
-          ]
-        ) {
-
-          if (
-            data &&
-            typeof data[key] ===
-              "string" &&
-            /^[a-f0-9]{8}-[a-f0-9-]{27}$/i
-              .test(data[key])
-          ) {
-            return data[key];
+        function extractUrl(d) {
+          if (!d || typeof d !== 'object') return '';
+          for (const k of ['downloadUrl', 'download_url', 'apkUrl', 'apk_url', 'url']) {
+            if (typeof d[k] === 'string' && /^https?:\/\//i.test(d[k])) return d[k];
           }
-
+          return extractUrl(d.data) || extractUrl(d.result);
         }
 
-        const match =
-          JSON.stringify(
-            data || {}
-          ).match(
-            /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/i
-          );
-
-        return match
-          ? match[0]
-          : "";
-      }
-
-      function extractUrl(data) {
-
-        if (
-          !data ||
-          typeof data !==
-            "object"
-        ) {
-          return "";
+        function beginProgress() {
+          let n = 3;
+          setBar(n);
+          clearInterval(pollTimer);
+          pollTimer = setInterval(() => {
+            if (n < 86) {
+              n += n < 35 ? 2 : n < 65 ? 1 : 0.35;
+              setBar(n);
+            }
+          }, 1000);
         }
 
-        for (
-          const key of [
-            "downloadUrl",
-            "download_url",
-            "apkUrl",
-            "apk_url",
-            "url"
-          ]
-        ) {
-
-          if (
-            typeof data[key] ===
-              "string" &&
-            /^https?:\/\//i.test(
-              data[key]
-            )
-          ) {
-            return data[key];
-          }
-
+        function stopProgress(ok) {
+          clearInterval(pollTimer);
+          if (ok) setBar(100);
         }
 
-        return (
-          extractUrl(data.data) ||
-          extractUrl(data.result)
-        );
-      }
-
-      /* =======================================================
-         BUILD PROGRESS
-         ======================================================= */
-
-      function beginProgress() {
-
-        let value = 3;
-
-        setBar(value);
-
-        clearInterval(
-          pollTimer
-        );
-
-        pollTimer =
-          setInterval(
-            () => {
-
-              if (value < 86) {
-
-                value +=
-                  value < 35
-                    ? 2
-                    : value < 65
-                    ? 1
-                    : 0.35;
-
-                setBar(value);
+        async function pollStatus(buildId, statusUrl, downloadUrl) {
+          let attempts = 0;
+          while (attempts < 180) {
+            attempts++;
+            await new Promise((r) => setTimeout(r, 3000));
+            try {
+              const u = statusUrl || CONFIG.API_URL + '/status?build_id=' + encodeURIComponent(buildId);
+              const r = await fetch(u, { cache: 'no-store' });
+              const d = await r.json();
+              if (d.ready === true || d.status === 'success') {
+                const finalUrl = d.downloadUrl || downloadUrl;
+                if (finalUrl) {
+                  stopProgress(true);
+                  show(progress, false);
+                  $('resultText').textContent = name.value.trim() + ' is ready to download.';
+                  download.href = finalUrl;
+                  show(result, true);
+                  return true;
+                }
               }
-
-            },
-            1000
-          );
-      }
-
-      function stopProgress(
-        success
-      ) {
-
-        clearInterval(
-          pollTimer
-        );
-
-        if (success) {
-          setBar(100);
+              if (d.stage) statusText.textContent = d.stage;
+              if (typeof d.progress === 'number') setBar(d.progress);
+              else setBar(Math.min(90, progressValue + 0.6));
+            } catch {}
+            statusText.textContent = 'APK is still being built. Please keep this page open.';
+          }
+          throw new Error('APK build is taking longer than expected. Please try again shortly.');
         }
-      }
 
-      /* =======================================================
-         STATUS POLLING
-         ======================================================= */
+        async function build() {
+          if (busy) return;
+          reset();
+          const n = name.value.trim(),
+            p = pkg.value.trim(),
+            v = ver.value.trim(),
+            c = code.value.trim(),
+            s = normalize(site.value),
+            i = iconData || iconUrl.value.trim();
 
-      async function pollStatus(
-        buildId,
-        statusUrl,
-        downloadUrl
-      ) {
+          if (!n) return alert('Enter App Name.');
+          if (!packageOk(p)) return alert('Enter a valid Package Name, e.g. com.example.app');
+          if (!/^\d+\.\d+\.\d+$/.test(v)) return alert('Version must be like 1.0.0');
+          if (!/^[1-9]\d*$/.test(c)) return alert('Version Code must be a positive number.');
+          try {
+            new URL(s);
+          } catch {
+            return alert('Enter a valid Website URL.');
+          }
+          if (!i) return alert('Upload an icon or enter an Image URL.');
 
-        let attempts = 0;
-
-        while (
-          attempts < 180
-        ) {
-
-          attempts++;
-
-          await new Promise(
-            (resolve) =>
-              setTimeout(
-                resolve,
-                3000
-              )
-          );
+          busy = true;
+          generate.disabled = true;
+          show(progress, true);
+          show(error, false);
+          statusTitle.textContent = 'Building APK…';
+          statusText.textContent = 'Submitting your app to FT Web2APK.';
+          beginProgress();
 
           try {
+            let response;
+            if (iconData) {
+              const fd = new FormData();
+              fd.append('name', n);
+              fd.append('appName', n);
+              fd.append('package', p);
+              fd.append('packageName', p);
+              fd.append('version', v);
+              fd.append('versionName', v);
+              fd.append('versioncode', c);
+              fd.append('versionCode', c);
+              fd.append('url', s);
+              fd.append('websiteUrl', s);
 
-            const url =
-              statusUrl ||
-              CONFIG.API_URL +
-                "/status?build_id=" +
-                encodeURIComponent(
-                  buildId
-                );
+              const mime = (iconData.match(/^data:(image\/[a-z0-9.+-]+);base64,/i) || [])[1] || 'image/png';
+              const raw = atob(iconData.split(',')[1]);
+              const bytes = new Uint8Array(raw.length);
+              for (let x = 0; x < raw.length; x++) bytes[x] = raw.charCodeAt(x);
+              fd.append('icon', new Blob([bytes], { type: mime }), 'icon.' + (mime === 'image/jpeg' ? 'jpg' : mime === 'image/webp' ? 'webp' : 'png'));
 
-            const response =
-              await fetch(
-                url,
-                {
-                  cache:
-                    "no-store"
-                }
-              );
-
-            const data =
-              await response.json();
-
-            if (
-              data.ready ===
-                true ||
-              data.status ===
-                "success"
-            ) {
-
-              const finalUrl =
-                data.downloadUrl ||
-                downloadUrl;
-
-              if (finalUrl) {
-
-                stopProgress(
-                  true
-                );
-
-                show(
-                  progress,
-                  false
-                );
-
-                $("resultText")
-                  .textContent =
-                  name.value.trim() +
-                  " is ready to download.";
-
-                download.href =
-                  finalUrl;
-
-                show(
-                  result,
-                  true
-                );
-
-                return true;
-              }
-            }
-
-            if (data.stage) {
-              statusText.textContent =
-                data.stage;
-            }
-
-            if (
-              typeof data.progress ===
-              "number"
-            ) {
-
-              setBar(
-                data.progress
-              );
-
+              response = await fetch(CONFIG.API_URL, { method: 'POST', body: fd, cache: 'no-store' });
             } else {
-
-              setBar(
-                Math.min(
-                  90,
-                  progressValue +
-                    0.6
-                )
-              );
+              const u = new URL(CONFIG.API_URL);
+              u.searchParams.set('name', n);
+              u.searchParams.set('package', p);
+              u.searchParams.set('version', v);
+              u.searchParams.set('versioncode', c);
+              u.searchParams.set('icon', i);
+              u.searchParams.set('url', s);
+              response = await fetch(u.toString(), { method: 'GET', headers: { Accept: 'application/json' }, cache: 'no-store' });
             }
 
-          } catch {}
-
-          statusText.textContent =
-            "APK is still being built. Please keep this page open.";
-        }
-
-        throw new Error(
-          "APK build is taking longer than expected. Please try again shortly."
-        );
-      }
-
-      /* =======================================================
-         BUILD
-         ======================================================= */
-
-      async function build() {
-
-        if (busy) return;
-
-        reset();
-
-        const appName =
-          name.value.trim();
-
-        const packageName =
-          pkg.value.trim();
-
-        const version =
-          ver.value.trim();
-
-        const versionCode =
-          code.value.trim();
-
-        const website =
-          normalize(
-            site.value
-          );
-
-        const icon =
-          iconData ||
-          iconUrl.value.trim();
-
-        /* VALIDATION */
-
-        if (!appName) {
-          return alert(
-            "Enter App Name."
-          );
-        }
-
-        if (
-          !packageOk(
-            packageName
-          )
-        ) {
-
-          return alert(
-            "Enter a valid Package Name, e.g. com.example.app"
-          );
-        }
-
-        if (
-          !/^\d+\.\d+\.\d+$/.test(
-            version
-          )
-        ) {
-
-          return alert(
-            "Version must be like 1.0.0"
-          );
-        }
-
-        if (
-          !/^[1-9]\d*$/.test(
-            versionCode
-          )
-        ) {
-
-          return alert(
-            "Version Code must be a positive number."
-          );
-        }
-
-        try {
-
-          new URL(
-            website
-          );
-
-        } catch {
-
-          return alert(
-            "Enter a valid Website URL."
-          );
-        }
-
-        if (!icon) {
-
-          return alert(
-            "Upload an icon or enter an Image URL."
-          );
-        }
-
-        /* START */
-
-        busy = true;
-        generate.disabled =
-          true;
-
-        show(
-          progress,
-          true
-        );
-
-        show(
-          error,
-          false
-        );
-
-        statusTitle.textContent =
-          "Building APK…";
-
-        statusText.textContent =
-          "Submitting your app to FT Web2APK.";
-
-        beginProgress();
-
-        try {
-
-          let response;
-
-          /* =================================================
-             FILE UPLOAD REQUEST
-             ================================================= */
-
-          if (iconData) {
-
-            const formData =
-              new FormData();
-
-            formData.append(
-              "name",
-              appName
-            );
-
-            formData.append(
-              "appName",
-              appName
-            );
-
-            formData.append(
-              "package",
-              packageName
-            );
-
-            formData.append(
-              "packageName",
-              packageName
-            );
-
-            formData.append(
-              "version",
-              version
-            );
-
-            formData.append(
-              "versionName",
-              version
-            );
-
-            formData.append(
-              "versioncode",
-              versionCode
-            );
-
-            formData.append(
-              "versionCode",
-              versionCode
-            );
-
-            formData.append(
-              "url",
-              website
-            );
-
-            formData.append(
-              "websiteUrl",
-              website
-            );
-
-            const mime =
-              (
-                iconData.match(
-                  /^data:(image\/[a-z0-9.+-]+);base64,/i
-                ) || []
-              )[1] ||
-              "image/png";
-
-            const raw =
-              atob(
-                iconData.split(
-                  ","
-                )[1]
-              );
-
-            const bytes =
-              new Uint8Array(
-                raw.length
-              );
-
-            for (
-              let x = 0;
-              x < raw.length;
-              x++
-            ) {
-
-              bytes[x] =
-                raw.charCodeAt(
-                  x
-                );
-
-            }
-
-            formData.append(
-              "icon",
-              new Blob(
-                [bytes],
-                {
-                  type:mime
-                }
-              ),
-              "icon." +
-                (
-                  mime ===
-                  "image/jpeg"
-                    ? "jpg"
-                    : mime ===
-                      "image/webp"
-                    ? "webp"
-                    : "png"
-                )
-            );
-
-            response =
-              await fetch(
-                CONFIG.API_URL,
-                {
-                  method:
-                    "POST",
-                  body:
-                    formData,
-                  cache:
-                    "no-store"
-                }
-              );
-
-          } else {
-
-            /* ===============================================
-               DIRECT IMAGE URL REQUEST
-               =============================================== */
-
-            const url =
-              new URL(
-                CONFIG.API_URL
-              );
-
-            url.searchParams.set(
-              "name",
-              appName
-            );
-
-            url.searchParams.set(
-              "package",
-              packageName
-            );
-
-            url.searchParams.set(
-              "version",
-              version
-            );
-
-            url.searchParams.set(
-              "versioncode",
-              versionCode
-            );
-
-            url.searchParams.set(
-              "icon",
-              icon
-            );
-
-            url.searchParams.set(
-              "url",
-              website
-            );
-
-            response =
-              await fetch(
-                url.toString(),
-                {
-                  method:
-                    "GET",
-                  headers:{
-                    Accept:
-                      "application/json"
-                  },
-                  cache:
-                    "no-store"
-                }
-              );
-          }
-
-          /* =================================================
-             RESPONSE
-             ================================================= */
-
-          const raw =
-            await response.text();
-
-          let data = {};
-
-          try {
-
-            data =
-              JSON.parse(
-                raw
-              );
-
-          } catch {}
-
-          if (!response.ok) {
-
-            throw new Error(
-              data.error ||
-              data.message ||
-              "API returned HTTP " +
-                response.status
-            );
-          }
-
-          if (
-            data.status ===
-            "error"
-          ) {
-
-            throw new Error(
-              data.error ||
-              "Build request failed"
-            );
-          }
-
-          const buildId =
-            extractId(
-              data
-            );
-
-          const directUrl =
-            extractUrl(
-              data
-            );
-
-          /* DIRECT RESULT */
-
-          if (!buildId) {
-
-            if (directUrl) {
-
-              stopProgress(
-                true
-              );
-
-              show(
-                progress,
-                false
-              );
-
-              download.href =
-                directUrl;
-
-              $("resultText")
-                .textContent =
-                appName +
-                " is ready to download.";
-
-              show(
-                result,
-                true
-              );
-
-              return;
-            }
-
-            throw new Error(
-              "API did not return a build ID."
-            );
-          }
-
-          /* POLLING */
-
-          statusTitle.textContent =
-            "Building APK…";
-
-          statusText.textContent =
-            data.stage ||
-            "Your APK is queued for building.";
-
-          setBar(
-            typeof data.progress ===
-              "number"
-              ? data.progress
-              : Math.max(
-                  8,
-                  progressValue
-                )
-          );
-
-          const statusUrl =
-            data.statusUrl ||
-            CONFIG.API_URL +
-              "/status?build_id=" +
-              encodeURIComponent(
-                buildId
-              );
-
-          await pollStatus(
-            buildId,
-            statusUrl,
-            directUrl
-          );
-
-        } catch (err) {
-
-          stopProgress(
-            false
-          );
-
-          show(
-            progress,
-            false
-          );
-
-          $("errorText")
-            .textContent =
-            /failed to fetch|networkerror|load failed/i
-              .test(
-                err.message || ""
-              )
-              ? "Could not connect to FT Web2APK API. Please check the Worker URL and try again."
-              : (
-                  err.message ||
-                  "APK generation failed."
-                );
-
-          show(
-            error,
-            true
-          );
-
-        } finally {
-
-          busy = false;
-
-          generate.disabled =
-            false;
-        }
-      }
-
-      /* =======================================================
-         EVENTS
-         ======================================================= */
-
-      generate.addEventListener(
-        "click",
-        build
-      );
-
-      $("retry").addEventListener(
-        "click",
-        build
-      );
-
-      [
-        name,
-        pkg,
-        ver,
-        code,
-        site,
-        iconUrl
-      ].forEach(
-        (element) => {
-
-          element.addEventListener(
-            "keydown",
-            (event) => {
-
-              if (
-                event.key ===
-                "Enter"
-              ) {
-
-                event.preventDefault();
-
-                build();
+            const raw = await response.text();
+            let d = {};
+            try {
+              d = JSON.parse(raw);
+            } catch {}
+
+            if (!response.ok) throw new Error(d.error || d.message || 'API returned HTTP ' + response.status);
+            if (d.status === 'error') throw new Error(d.error || 'Build request failed');
+
+            const id = extractId(d);
+            const direct = extractUrl(d);
+
+            if (!id) {
+              if (direct) {
+                stopProgress(true);
+                show(progress, false);
+                download.href = direct;
+                $('resultText').textContent = n + ' is ready to download.';
+                show(result, true);
+                return;
               }
-
+              throw new Error('API did not return a build ID.');
             }
-          );
 
+            statusTitle.textContent = 'Building APK…';
+            statusText.textContent = d.stage || 'Your APK is queued for building.';
+            setBar(typeof d.progress === 'number' ? d.progress : Math.max(8, progressValue));
+            const statusUrl = d.statusUrl || CONFIG.API_URL + '/status?build_id=' + encodeURIComponent(id);
+            await pollStatus(id, statusUrl, direct);
+          } catch (e) {
+            stopProgress(false);
+            show(progress, false);
+            $('errorText').textContent = /failed to fetch|networkerror|load failed/i.test(e.message || '')
+              ? 'Could not connect to FT Web2APK API. Please check the Worker URL and try again.'
+              : (e.message || 'APK generation failed.');
+            show(error, true);
+          } finally {
+            busy = false;
+            generate.disabled = false;
+          }
         }
-      );
 
-    })();
-  </script>
+        generate.addEventListener('click', build);
+        $('retry').addEventListener('click', build);
 
-</body>
-            </html>
+        [name, pkg, ver, code, site, iconUrl].forEach((x) =>
+          x.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              build();
+            }
+          })
+        );
+      })();
+    </script>
+  </body>
+  </html>
