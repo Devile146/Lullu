@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#080a0f" />
+  <meta name="description" content="FT WEB2APK — Convert any website into an Android APK in minutes." />
+  <title>FT WEB2APK</title>
+  <link rel="preconnect" href="https://ft-web2apk.ftshehryar10044.workers.dev" crossorigin />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+  <!-- ============ LIVE VIDEO BACKGROUND ============ -->
+  <!-- The src is set by js/app.js from APP_CONFIG.BACKGROUND_VIDEO_URL -->
+  <video id="bgVideo" class="bg-video" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+  <div class="bg-overlay" aria-hidden="true"></div>
+
+  <!-- ============ JOIN MODAL ============ -->
+  <div id="joinModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="joinTitle" hidden>
+    <div class="modal" role="document">
+      <h2 id="joinTitle" class="modal-title">Connect With Us</h2>
+      <p class="modal-sub">Join our WhatsApp group for updates, support and early access.</p>
+
+      <a id="whatsappBtn" class="btn-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+        <svg class="wa-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2a9.9 9.9 0 0 0-8.6 14.82L2 22l5.32-1.4A9.9 9.9 0 0 0 12.04 22h.01a9.9 9.9 0 0 0 9.9-9.9 9.82 9.82 0 0 0-2.9-7.19Zm-7.01 15.24h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.16.83.85-3.08-.2-.32a8.23 8.23 0 1 1 15.27-4.34 8.23 8.23 0 0 1-8.27 8.24Zm4.52-6.16c-.25-.12-1.47-.72-1.7-.8-.23-.09-.4-.13-.56.12-.17.25-.65.8-.79.96-.15.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23a7.5 7.5 0 0 1-1.38-1.72c-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.15.17-.25.25-.42.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.42h-.48c-.17 0-.43.06-.66.31-.23.25-.87.85-.87 2.07 0 1.22.9 2.4 1.02 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29Z"/>
+        </svg>
+        <span>Join WhatsApp Group</span>
+      </a>
+
+      <button id="cancelJoin" type="button" class="btn-glass">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ============ MAIN APP ============ -->
+  <main class="wrap" id="appRoot" aria-hidden="true">
+
+    <header class="top">
+      <div class="logo">
+        <img id="brandLogo" alt="FT WEB2APK logo" />
+      </div>
+      <div>
+        <h1 class="title">FT WEB2APK</h1>
+        <div class="sub">Professional Web2APK Builder — Website → APK</div>
+      </div>
+    </header>
+
+    <!-- 01 App Details -->
+    <section class="card">
+      <div class="head">
+        <div class="head-left">
+          <div class="num">01</div>
+          <h2>App Details</h2>
+        </div>
+        <div class="hint">All fields required</div>
+      </div>
+      <div class="grid">
+        <label class="field">
+          <span>App Name</span>
+          <input id="name" placeholder="Your App Name" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span>Package Name</span>
+          <input id="pkg" placeholder="com.example.app" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span>Version</span>
+          <input id="ver" value="1.0.0" />
+        </label>
+        <label class="field">
+          <span>Version Code</span>
+          <input id="code" type="number" min="1" value="1" />
+        </label>
+        <label class="field wide">
+          <span>Website URL</span>
+          <input id="site" type="url" placeholder="https://example.com" autocomplete="url" />
+        </label>
+      </div>
+    </section>
+
+    <!-- 02 App Icon -->
+    <section class="card">
+      <div class="head">
+        <div class="head-left">
+          <div class="num">02</div>
+          <h2>App Icon</h2>
+        </div>
+        <div class="hint">PNG · JPG · WebP · Max 5MB</div>
+      </div>
+      <div class="icons">
+        <label class="upload">
+          <input id="file" type="file" accept="image/png,image/jpeg,image/webp" />
+          <b>↑</b>
+          <strong>Upload Image</strong>
+          <small id="fileName">Choose icon file</small>
+        </label>
+        <div class="or">OR</div>
+        <label class="url">
+          <span>Image URL</span>
+          <input id="iconUrl" type="url" placeholder="https://example.com/icon.png" />
+        </label>
+        <div class="preview" id="preview">
+          <span>ICON</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress -->
+    <section id="progress" class="progress hide" role="status" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="status">
+        <strong id="statusTitle">Building APK…</strong>
+        <span id="statusText">Submitting your app to FT Web2APK.</span>
+      </div>
+      <div class="bar"><i id="bar"></i></div>
+    </section>
+
+    <!-- Result -->
+    <section id="result" class="result hide" role="status" aria-live="polite">
+      <div class="check" aria-hidden="true">✓</div>
+      <div>
+        <h2>APK Ready</h2>
+        <p id="resultText">Your APK is ready.</p>
+      </div>
+      <a id="download" class="download" href="#" target="_blank" rel="noopener noreferrer">Download APK</a>
+    </section>
+
+    <!-- Error -->
+    <section id="error" class="error hide" role="alert">
+      <strong>APK Generation Failed</strong>
+      <p id="errorText"></p>
+      <button id="retry" class="retry" type="button">Try Again</button>
+    </section>
+
+    <button id="generate" class="generate" type="button">Generate APK</button>
+
+    <footer class="watermark">© 2026 Dev TECHNICAL FAHAD — All Rights Reserved</footer>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
