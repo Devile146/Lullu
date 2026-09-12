@@ -3,37 +3,30 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="theme-color" content="#050811" />
+    <meta name="theme-color" content="#030712" />
     <title>FT WEB2APK</title>
     <style>
       :root {
-        --bg-fallback: #050811;
-        --bg-image: url("https://raw.githubusercontent.com/Devile146/Lullu/ef76c323dd24c29d5886bfb524d8ff2590ea4a3d/Back.jpg");
-        
-        /* Cyber Neon Palette */
-        --neon-cyan: #00f0ff;
-        --neon-pink: #ff007f;
-        --neon-purple: #9d4edd;
-        --neon-blue: #0077fe;
-        --neon-gold: #ffb703;
-        
-        /* Ultra Transparent Glass */
-        --cyber-glass: rgba(7, 12, 22, 0.42);
-        --cyber-glass-hover: rgba(10, 18, 32, 0.55);
-        --cyber-glass-input: rgba(4, 8, 16, 0.50);
-        --cyber-border: rgba(0, 240, 255, 0.22);
-        
-        --text-primary: #f0f6fc;
-        --text-secondary: #94a3b8;
-        --text-muted: #64748b;
-        
-        --success-neon: #00f5a0;
-        --danger-neon: #ff3366;
-        --wa-neon: #25d366;
-        --wa-glow: rgba(37, 211, 102, 0.35);
-        
-        --blur-val: 12px;
-        --card-radius: 22px;
+        /* Neon Highlights */
+        --cyan: #00f2fe;
+        --cyan-glow: rgba(0, 242, 254, 0.4);
+        --pink: #ff007f;
+        --pink-glow: rgba(255, 0, 127, 0.35);
+        --gold: #f5b041;
+        --green: #25d366;
+        --green-glow: rgba(37, 211, 102, 0.4);
+
+        /* See-Through Crystal Glass Colors */
+        --glass-bg: rgba(6, 12, 24, 0.32);
+        --glass-bg-hover: rgba(10, 20, 40, 0.45);
+        --glass-input: rgba(4, 8, 18, 0.4);
+        --glass-border: rgba(0, 242, 254, 0.28);
+        --glass-border-bright: rgba(0, 242, 254, 0.7);
+
+        /* Crisp Readable Text */
+        --text-white: #ffffff;
+        --text-sub: #e2e8f0;
+        --text-hint: #38bdf8;
       }
 
       * {
@@ -43,41 +36,44 @@
 
       html, body {
         margin: 0;
+        padding: 0;
         min-height: 100%;
-        background-color: var(--bg-fallback);
-        color: var(--text-primary);
-        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        background-color: #030712;
+        color: var(--text-white);
+        font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
         overflow-x: hidden;
       }
 
       /* ==================================================
-         FIXED NON-MOVING BACKGROUND
+         FIXED PHOTO BACKGROUND (100% VISIBLE & SHARP)
          ================================================== */
-      .bg-layer {
+      .bg-fixed {
         position: fixed;
         inset: 0;
         width: 100vw;
         height: 100vh;
         height: 100dvh;
-        background-color: var(--bg-fallback);
-        background-image: var(--bg-image);
+        background-color: #030712;
+        background-image: 
+          url("https://raw.githubusercontent.com/Devile146/Lullu/ef76c323dd24c29d5886bfb524d8ff2590ea4a3d/Back.jpg"),
+          url("https://github.com/Devile146/Lullu/raw/ef76c323dd24c29d5886bfb524d8ff2590ea4a3d/Back.jpg"),
+          url("Back.jpg"),
+          url("Back.jp");
         background-size: cover;
         background-position: center center;
         background-repeat: no-repeat;
         z-index: -2;
-        pointer-events: none;
         transform: translateZ(0);
+        pointer-events: none;
       }
 
-      /* Subtle Cyber Hologram Vignette - lets Back.jpg shine through clearly */
-      .bg-overlay {
+      /* Ultra-light subtle tint: protects photo visibility while keeping text readable */
+      .bg-tint {
         position: fixed;
         inset: 0;
         width: 100vw;
         height: 100vh;
-        height: 100dvh;
-        background: radial-gradient(circle at 50% 15%, rgba(0, 240, 255, 0.08), transparent 55%),
-                    linear-gradient(180deg, rgba(5, 8, 17, 0.38) 0%, rgba(5, 8, 17, 0.75) 100%);
+        background: rgba(3, 7, 18, 0.35);
         z-index: -1;
         pointer-events: none;
       }
@@ -87,201 +83,145 @@
       }
 
       /* ==================================================
-         MAIN CONTAINER (SCROLLABLE OVER FIXED BG)
+         MAIN CONTENT CONTAINER (SUPER SMOOTH SCROLL)
          ================================================== */
       .wrap {
-        width: min(880px, calc(100% - 28px));
-        margin: auto;
-        padding: 40px 0 28px;
-        opacity: 1;
-        transition: filter 0.35s ease, opacity 0.35s ease;
-      }
-
-      .wrap.blurred {
-        filter: blur(5px);
-        user-select: none;
-        pointer-events: none;
+        width: min(860px, calc(100% - 24px));
+        margin: 0 auto;
+        padding: 34px 0 24px;
+        position: relative;
+        z-index: 1;
       }
 
       /* ==================================================
-         CENTERED CYBER BRANDING HEADER
+         CENTERED HEADER & LOGO
          ================================================== */
-      .top {
+      .top-header {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
-        margin-bottom: 30px;
-        gap: 14px;
+        margin-bottom: 26px;
+        gap: 12px;
       }
 
-      /* Animated Glowing Neon Circle Logo */
-      .logo-wrapper {
-        position: relative;
-        width: 76px;
-        height: 76px;
+      .logo-circle {
+        width: 78px;
+        height: 78px;
         border-radius: 50%;
+        padding: 3px;
+        background: linear-gradient(135deg, var(--cyan), var(--pink), var(--cyan));
+        box-shadow: 0 0 25px var(--cyan-glow);
         display: grid;
         place-items: center;
       }
 
-      .logo-wrapper::before {
-        content: '';
-        position: absolute;
-        inset: -3px;
-        border-radius: 50%;
-        background: conic-gradient(from 0deg, var(--neon-cyan), var(--neon-pink), var(--neon-purple), var(--neon-cyan));
-        animation: rotateGlow 5s linear infinite;
-        filter: blur(4px);
-        opacity: 0.85;
-      }
-
-      .logo {
-        position: relative;
-        width: 72px;
-        height: 72px;
-        border-radius: 50%;
-        overflow: hidden;
-        background: #060a12;
-        border: 2px solid rgba(0, 240, 255, 0.6);
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.35), inset 0 0 10px rgba(0, 240, 255, 0.2);
-        z-index: 1;
-      }
-
-      .logo img {
+      .logo-img {
         width: 100%;
         height: 100%;
+        border-radius: 50%;
         object-fit: cover;
         display: block;
-      }
-
-      .header-text {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        background: #020617;
       }
 
       .title {
-        font-size: clamp(30px, 7vw, 48px);
-        line-height: 1.05;
+        font-size: clamp(30px, 7vw, 46px);
         margin: 0;
-        letter-spacing: 0.04em;
         font-weight: 900;
+        letter-spacing: 0.04em;
         text-transform: uppercase;
-        background: linear-gradient(135deg, #ffffff 0%, #bbf7d0 30%, var(--neon-cyan) 65%, var(--neon-pink) 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        text-shadow: 0 0 30px rgba(0, 240, 255, 0.4);
+        color: #ffffff;
+        text-shadow: 0 0 16px var(--cyan-glow), 0 2px 6px rgba(0, 0, 0, 0.9);
       }
 
-      .sub {
+      .subtitle {
         font-size: 13px;
-        color: var(--text-secondary);
-        margin-top: 8px;
-        letter-spacing: 0.05em;
+        color: #cbd5e1;
+        margin-top: 6px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
         text-transform: uppercase;
-        font-weight: 500;
-        text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
       }
 
       /* ==================================================
-         TRANSPARENT CYBER-GLASS PANELS WITH NEON BORDERS
+         SEE-THROUGH GLASS CARDS (BACKGROUND CLEARLY VISIBLE)
          ================================================== */
       .card, .progress, .result, .error {
-        position: relative;
-        background: var(--cyber-glass);
-        backdrop-filter: blur(var(--blur-val));
-        -webkit-backdrop-filter: blur(var(--blur-val));
-        border-radius: var(--card-radius);
-        margin-bottom: 20px;
-        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        overflow: hidden;
-      }
-
-      /* Animated Colorful Border Accent for Cards */
-      .card::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: var(--card-radius);
-        padding: 1px;
-        background: linear-gradient(135deg, rgba(0, 240, 255, 0.45) 0%, rgba(255, 0, 127, 0.25) 50%, rgba(157, 78, 221, 0.4) 100%);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        pointer-events: none;
+        background: var(--glass-bg);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        margin-bottom: 18px;
+        padding: 22px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(0, 242, 254, 0.06);
+        transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
       }
 
       .card:hover {
-        background: var(--cyber-glass-hover);
-        box-shadow: 0 25px 55px rgba(0, 0, 0, 0.65), 0 0 25px rgba(0, 240, 255, 0.15);
+        background: var(--glass-bg-hover);
+        border-color: var(--glass-border-bright);
         transform: translateY(-2px);
-      }
-
-      .card {
-        padding: 26px;
       }
 
       .head {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 18px;
       }
 
       .head-left {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
       }
 
-      /* Cyber Neon Number Badge */
       .num {
         width: 32px;
         height: 32px;
         display: grid;
         place-items: center;
-        border-radius: 10px;
-        background: rgba(0, 240, 255, 0.12);
-        border: 1px solid rgba(0, 240, 255, 0.45);
-        color: var(--neon-cyan);
-        font-size: 11px;
+        border-radius: 9px;
+        background: rgba(0, 242, 254, 0.15);
+        border: 1px solid var(--cyan);
+        color: var(--cyan);
+        font-size: 12px;
         font-weight: 900;
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+        box-shadow: 0 0 10px var(--cyan-glow);
       }
 
       .head h2 {
         font-size: 17px;
         margin: 0;
         font-weight: 800;
+        color: #ffffff;
         letter-spacing: 0.02em;
         text-transform: uppercase;
-        color: #ffffff;
-        text-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
       }
 
       .hint {
-        font-size: 11px;
-        color: var(--neon-cyan);
-        font-weight: 600;
+        font-size: 12px;
+        color: var(--text-hint);
+        font-weight: 700;
         letter-spacing: 0.03em;
-        text-transform: uppercase;
-        opacity: 0.85;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
       }
 
       .grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 16px;
+        gap: 15px;
       }
 
       .field {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
       }
 
       .wide {
@@ -289,67 +229,71 @@
       }
 
       .field span, .url span {
-        font-size: 11px;
-        color: #94a3b8;
-        font-weight: 700;
-        letter-spacing: 0.05em;
+        font-size: 12px;
+        color: #f8fafc;
+        font-weight: 800;
+        letter-spacing: 0.04em;
         text-transform: uppercase;
-      }
-
-      /* Cyber Translucent Inputs */
-      input {
-        height: 48px;
-        border-radius: 13px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        background: var(--cyber-glass-input);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        color: #ffffff;
-        padding: 0 16px;
-        outline: none;
-        transition: all 0.25s ease;
-      }
-
-      input:focus {
-        border-color: var(--neon-cyan);
-        background: rgba(8, 14, 26, 0.65);
-        box-shadow: 0 0 18px rgba(0, 240, 255, 0.35), inset 0 0 6px rgba(0, 240, 255, 0.15);
-      }
-
-      input::placeholder {
-        color: #556277;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
       }
 
       /* ==================================================
-         APP ICON CYBER UPLOADER
+         BLANK SEE-THROUGH GLASS INPUTS
+         ================================================== */
+      input {
+        height: 48px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: var(--glass-input);
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 0 15px;
+        outline: none;
+        transition: all 0.2s ease;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      }
+
+      input:focus {
+        border-color: var(--cyan);
+        background: rgba(8, 16, 32, 0.55);
+        box-shadow: 0 0 15px var(--cyan-glow);
+      }
+
+      input::placeholder {
+        color: #94a3b8;
+        text-shadow: none;
+      }
+
+      /* ==================================================
+         APP ICON & PREVIEW (BLANK GLASSY)
          ================================================== */
       .icons {
         display: grid;
-        grid-template-columns: 1fr 34px 1.2fr 108px;
-        gap: 14px;
+        grid-template-columns: 1fr 30px 1.2fr 100px;
+        gap: 12px;
         align-items: center;
       }
 
       .upload {
-        height: 125px;
-        border: 1px dashed rgba(0, 240, 255, 0.35);
-        border-radius: 16px;
-        background: var(--cyber-glass-input);
-        backdrop-filter: blur(8px);
+        height: 120px;
+        border: 1px dashed rgba(0, 242, 254, 0.45);
+        border-radius: 15px;
+        background: var(--glass-input);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
         cursor: pointer;
-        padding: 10px;
-        transition: all 0.25s ease;
+        padding: 8px;
+        transition: all 0.2s ease;
       }
 
       .upload:hover {
-        border-color: var(--neon-cyan);
-        background: rgba(0, 240, 255, 0.08);
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);
+        border-color: var(--cyan);
+        background: rgba(0, 242, 254, 0.12);
+        box-shadow: 0 0 15px var(--cyan-glow);
         transform: translateY(-2px);
       }
 
@@ -359,39 +303,41 @@
 
       .upload b {
         font-size: 24px;
-        color: var(--neon-cyan);
-        line-height: 1;
-        text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        color: var(--cyan);
+        text-shadow: 0 0 8px var(--cyan-glow);
       }
 
       .upload strong {
         font-size: 12px;
-        margin-top: 5px;
+        margin-top: 4px;
         color: #ffffff;
+        font-weight: 700;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
       }
 
       .upload small, .url small {
-        font-size: 10px;
-        color: var(--text-secondary);
+        font-size: 11px;
+        color: #cbd5e1;
         margin-top: 4px;
         max-width: 140px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
       }
 
       .or {
         text-align: center;
-        font-size: 11px;
-        color: var(--neon-pink);
+        font-size: 12px;
+        color: var(--pink);
         font-weight: 900;
-        letter-spacing: 0.08em;
+        text-shadow: 0 0 10px var(--pink-glow);
       }
 
       .url {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
       }
 
       .url input {
@@ -399,73 +345,57 @@
       }
 
       .preview {
-        height: 125px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 16px;
-        background: var(--cyber-glass-input);
+        height: 120px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        background: var(--glass-input);
         display: grid;
         place-items: center;
         overflow: hidden;
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
       }
 
       .preview span {
-        font-size: 10px;
-        letter-spacing: 0.15em;
-        color: #556277;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        color: #94a3b8;
         font-weight: 900;
       }
 
       .preview img {
-        width: 80px;
-        height: 80px;
+        width: 76px;
+        height: 76px;
         object-fit: cover;
-        border-radius: 16px;
-        border: 1px solid rgba(0, 240, 255, 0.4);
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+        border-radius: 14px;
+        border: 1px solid var(--cyan);
+        box-shadow: 0 0 12px var(--cyan-glow);
       }
 
       /* ==================================================
-         CYBER GENERATE BUTTON WITH NEON PULSE
+         BLANK GLASSY GENERATE BUTTON
          ================================================== */
       .generate {
-        position: relative;
         width: 100%;
-        height: 56px;
-        border: 0;
-        border-radius: 16px;
-        background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-blue) 45%, var(--neon-purple) 85%, var(--neon-pink) 100%);
-        background-size: 200% 200%;
+        height: 54px;
+        border: 1.5px solid var(--cyan);
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(0, 242, 254, 0.28), rgba(255, 0, 127, 0.28));
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         color: #ffffff;
         font-size: 15px;
         font-weight: 900;
         letter-spacing: 0.05em;
         text-transform: uppercase;
         cursor: pointer;
-        box-shadow: 0 12px 35px rgba(0, 240, 255, 0.35), 0 0 20px rgba(255, 0, 127, 0.25);
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        overflow: hidden;
-        animation: gradientShift 6s ease infinite;
-      }
-
-      .generate::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
-        transition: 0.5s;
-      }
-
-      .generate:hover:not(:disabled)::before {
-        left: 100%;
+        box-shadow: 0 0 20px var(--cyan-glow), inset 0 0 10px rgba(255, 255, 255, 0.15);
+        transition: all 0.25s ease;
+        text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
       }
 
       .generate:hover:not(:disabled) {
+        background: linear-gradient(135deg, rgba(0, 242, 254, 0.45), rgba(255, 0, 127, 0.45));
+        box-shadow: 0 0 30px var(--cyan-glow), inset 0 0 15px rgba(255, 255, 255, 0.25);
         transform: translateY(-2px);
-        box-shadow: 0 16px 45px rgba(0, 240, 255, 0.5), 0 0 30px rgba(255, 0, 127, 0.4);
       }
 
       .generate:active:not(:disabled) {
@@ -473,33 +403,30 @@
       }
 
       .generate:disabled {
-        opacity: 0.5;
+        opacity: 0.45;
         cursor: not-allowed;
         transform: none;
-        box-shadow: none;
       }
 
       /* ==================================================
-         STATUS & RESULT CARDS (TRANSPARENT NEON)
+         PROGRESS / RESULT / ERROR SECTIONS
          ================================================== */
       .progress {
-        padding: 22px;
         display: grid;
         grid-template-columns: auto 1fr;
-        gap: 16px;
+        gap: 15px;
         align-items: center;
-        border: 1px solid rgba(0, 240, 255, 0.3);
+        border-color: var(--cyan);
       }
 
       .spinner {
         width: 32px;
         height: 32px;
-        border: 3px solid rgba(0, 240, 255, 0.15);
-        border-top-color: var(--neon-cyan);
-        border-right-color: var(--neon-pink);
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        border-top-color: var(--cyan);
         border-radius: 50%;
         animation: spin 0.75s linear infinite;
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+        box-shadow: 0 0 12px var(--cyan-glow);
       }
 
       .status strong {
@@ -511,15 +438,16 @@
 
       .status span {
         display: block;
-        color: var(--text-secondary);
+        color: #e2e8f0;
         font-size: 12px;
-        margin-top: 4px;
+        margin-top: 3px;
+        font-weight: 500;
       }
 
       .bar {
         grid-column: 1 / -1;
         height: 6px;
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.15);
         border-radius: 99px;
         overflow: hidden;
         margin-top: 6px;
@@ -529,34 +457,32 @@
         display: block;
         height: 100%;
         width: 3%;
-        background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
-        box-shadow: 0 0 12px var(--neon-cyan);
+        background: linear-gradient(90deg, var(--cyan), var(--pink));
         border-radius: 99px;
-        transition: width 0.45s ease;
+        box-shadow: 0 0 10px var(--cyan);
+        transition: width 0.35s ease;
       }
 
       .result {
-        padding: 20px 24px;
         display: grid;
         grid-template-columns: auto 1fr auto;
-        gap: 16px;
+        gap: 14px;
         align-items: center;
-        border: 1px solid rgba(0, 245, 160, 0.4);
-        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 25px rgba(0, 245, 160, 0.18);
+        border-color: var(--green);
+        box-shadow: 0 0 20px var(--green-glow);
       }
 
       .check {
-        width: 44px;
-        height: 44px;
-        border-radius: 14px;
-        background: rgba(0, 245, 160, 0.15);
-        color: var(--success-neon);
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: rgba(37, 211, 102, 0.2);
+        color: var(--green);
         display: grid;
         place-items: center;
         font-weight: 900;
         font-size: 18px;
-        border: 1px solid rgba(0, 245, 160, 0.4);
-        box-shadow: 0 0 15px rgba(0, 245, 160, 0.3);
+        border: 1px solid var(--green);
       }
 
       .result h2 {
@@ -567,7 +493,7 @@
 
       .result p {
         font-size: 12px;
-        color: var(--text-secondary);
+        color: #cbd5e1;
         margin: 0;
       }
 
@@ -575,48 +501,49 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 12px 20px;
-        border-radius: 13px;
-        background: linear-gradient(135deg, var(--success-neon), #00c878);
-        color: #04120a;
+        padding: 11px 20px;
+        border-radius: 12px;
+        border: 1.5px solid var(--green);
+        background: rgba(37, 211, 102, 0.3);
+        color: #ffffff;
         text-decoration: none;
         font-size: 13px;
-        font-weight: 900;
+        font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 0.03em;
-        box-shadow: 0 8px 25px rgba(0, 245, 160, 0.4);
-        transition: all 0.25s ease;
+        box-shadow: 0 0 15px var(--green-glow);
+        transition: all 0.2s ease;
       }
 
       .download:hover {
+        background: rgba(37, 211, 102, 0.5);
         transform: translateY(-2px);
-        box-shadow: 0 12px 30px rgba(0, 245, 160, 0.6);
+        box-shadow: 0 0 22px var(--green-glow);
       }
 
       .error {
-        padding: 20px 24px;
-        border: 1px solid rgba(255, 51, 102, 0.4);
-        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 51, 102, 0.2);
+        border-color: #ff3366;
+        box-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
       }
 
       .error strong {
         font-size: 14px;
-        color: #ff5e87;
+        color: #ff4d79;
         display: block;
       }
 
       .error p {
         font-size: 12px;
-        color: var(--text-secondary);
+        color: #e2e8f0;
         margin: 6px 0 14px;
       }
 
       .retry {
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        background: rgba(14, 20, 32, 0.8);
-        color: var(--text-primary);
-        border-radius: 11px;
-        padding: 10px 18px;
+        border: 1px solid var(--cyan);
+        background: rgba(0, 242, 254, 0.15);
+        color: #ffffff;
+        border-radius: 10px;
+        padding: 9px 16px;
         font-size: 12px;
         font-weight: 800;
         cursor: pointer;
@@ -624,27 +551,30 @@
       }
 
       .retry:hover {
-        background: rgba(24, 34, 52, 0.9);
-        border-color: var(--neon-cyan);
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+        background: rgba(0, 242, 254, 0.3);
+        box-shadow: 0 0 10px var(--cyan-glow);
       }
 
       .watermark {
         text-align: center;
-        color: var(--text-muted);
+        color: #cbd5e1;
         font-size: 11px;
-        padding: 28px 0 8px;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
+        padding: 24px 0 6px;
+        letter-spacing: 0.04em;
         font-weight: 600;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
       }
 
       .hide {
         display: none !important;
       }
 
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
       /* ==================================================
-         WHATSAPP POPUP - CYBER TRANSPARENT GLASS
+         WHATSAPP MODAL POPUP (SEE-THROUGH GLASS)
          ================================================== */
       .modal-overlay {
         position: fixed;
@@ -652,16 +582,16 @@
         width: 100vw;
         height: 100vh;
         height: 100dvh;
-        background: rgba(3, 6, 12, 0.65);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        background: rgba(2, 6, 16, 0.45);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
         display: grid;
         place-items: center;
-        padding: 18px;
+        padding: 16px;
         z-index: 9999;
         opacity: 0;
         visibility: hidden;
-        transition: opacity 0.35s ease, visibility 0.35s ease;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
       }
 
       .modal-overlay.modal-show {
@@ -675,81 +605,64 @@
       }
 
       .modal-glass {
-        position: relative;
-        width: min(420px, calc(100% - 14px));
-        background: rgba(8, 14, 26, 0.65);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        border-radius: 26px;
-        padding: 34px 26px 28px;
-        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.75), 0 0 35px rgba(0, 240, 255, 0.15);
+        width: min(400px, calc(100% - 16px));
+        background: rgba(5, 12, 24, 0.55);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1.5px solid var(--cyan);
+        border-radius: 22px;
+        padding: 28px 22px 24px;
+        box-shadow: 0 0 35px var(--cyan-glow), 0 20px 40px rgba(0, 0, 0, 0.7);
         text-align: center;
-        transform: scale(0.92) translateY(15px);
-        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
-        overflow: hidden;
-      }
-
-      .modal-glass::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: 26px;
-        padding: 1.5px;
-        background: linear-gradient(135deg, var(--neon-cyan), var(--wa-neon), var(--neon-pink));
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        pointer-events: none;
+        transform: scale(0.94) translateY(10px);
+        transition: transform 0.25s ease;
       }
 
       .modal-overlay.modal-show .modal-glass {
         transform: scale(1) translateY(0);
       }
 
-      .modal-overlay.modal-closing .modal-glass {
-        transform: scale(0.92) translateY(15px);
-      }
-
       .modal-icon-badge {
-        width: 64px;
-        height: 64px;
-        margin: 0 auto 16px;
-        border-radius: 20px;
-        background: linear-gradient(135deg, rgba(37, 211, 102, 0.25), rgba(0, 240, 255, 0.15));
-        border: 1px solid rgba(37, 211, 102, 0.5);
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 14px;
+        border-radius: 18px;
+        background: rgba(37, 211, 102, 0.2);
+        border: 1px solid var(--green);
         display: grid;
         place-items: center;
-        color: var(--wa-neon);
-        box-shadow: 0 0 25px var(--wa-glow);
+        color: var(--green);
+        box-shadow: 0 0 20px var(--green-glow);
       }
 
       .modal-icon-badge svg {
-        width: 34px;
-        height: 34px;
+        width: 32px;
+        height: 32px;
       }
 
       .modal-title {
-        font-size: 24px;
+        font-size: 22px;
         font-weight: 900;
         margin: 0 0 8px;
-        letter-spacing: -0.01em;
         color: #ffffff;
         text-transform: uppercase;
-        text-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+        letter-spacing: 0.02em;
+        text-shadow: 0 0 10px var(--cyan-glow);
       }
 
       .modal-subtitle {
         font-size: 13px;
-        color: var(--text-secondary);
-        margin: 0 0 24px;
+        color: #e2e8f0;
+        margin: 0 0 20px;
         line-height: 1.5;
-        padding: 0 6px;
+        font-weight: 500;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
       }
 
       .modal-actions {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
       }
 
       .btn-whatsapp {
@@ -758,24 +671,26 @@
         justify-content: center;
         gap: 10px;
         width: 100%;
-        min-height: 52px;
-        padding: 12px 20px;
-        border-radius: 15px;
-        background: linear-gradient(135deg, var(--wa-neon), #1ea952);
+        min-height: 48px;
+        padding: 10px 18px;
+        border-radius: 14px;
+        border: 1.5px solid var(--green);
+        background: rgba(37, 211, 102, 0.35);
         color: #ffffff;
         text-decoration: none;
         font-size: 14px;
         font-weight: 900;
         letter-spacing: 0.02em;
         text-transform: uppercase;
-        box-shadow: 0 12px 30px var(--wa-glow);
-        transition: all 0.25s ease;
+        box-shadow: 0 0 20px var(--green-glow);
+        transition: all 0.2s ease;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
       }
 
       .btn-whatsapp:hover {
-        background: linear-gradient(135deg, #2bf176, #1fad53);
+        background: rgba(37, 211, 102, 0.6);
+        box-shadow: 0 0 28px var(--green-glow);
         transform: translateY(-2px);
-        box-shadow: 0 16px 40px rgba(37, 211, 102, 0.55);
       }
 
       .btn-cancel {
@@ -783,12 +698,12 @@
         align-items: center;
         justify-content: center;
         width: 100%;
-        min-height: 48px;
-        padding: 10px 18px;
-        border-radius: 15px;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        background: rgba(255, 255, 255, 0.05);
-        color: #cbd5e1;
+        min-height: 44px;
+        padding: 8px 16px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
         font-size: 13px;
         font-weight: 800;
         cursor: pointer;
@@ -796,36 +711,17 @@
       }
 
       .btn-cancel:hover {
-        background: rgba(255, 255, 255, 0.12);
-        border-color: var(--neon-cyan);
-        color: #ffffff;
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+        background: rgba(255, 255, 255, 0.18);
+        border-color: var(--cyan);
+        box-shadow: 0 0 10px var(--cyan-glow);
       }
 
       /* ==================================================
-         KEYFRAME ANIMATIONS
+         MOBILE RESPONSIVENESS
          ================================================== */
-      @keyframes rotateGlow {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-
-      @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-      }
-
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-
-      /* ==================================================
-         RESPONSIVE STYLING (360px - 1920px+)
-         ================================================== */
-      @media (max-width: 768px) {
+      @media (max-width: 700px) {
         .wrap {
-          padding-top: 30px;
+          padding-top: 24px;
         }
         .grid {
           grid-template-columns: 1fr;
@@ -835,13 +731,10 @@
         }
         .icons {
           grid-template-columns: 1fr;
-          gap: 12px;
-        }
-        .or {
-          padding: 2px 0;
+          gap: 10px;
         }
         .preview {
-          height: 115px;
+          height: 110px;
         }
         .result {
           grid-template-columns: auto 1fr;
@@ -854,43 +747,26 @@
         }
       }
 
-      @media (max-width: 480px) {
-        .logo-wrapper {
+      @media (max-width: 400px) {
+        .logo-circle {
           width: 68px;
           height: 68px;
         }
-        .logo {
-          width: 64px;
-          height: 64px;
+        .title {
+          font-size: 26px;
         }
         .card {
-          padding: 20px 18px;
-        }
-        .modal-glass {
-          padding: 26px 18px 22px;
-        }
-        .modal-title {
-          font-size: 21px;
-        }
-      }
-
-      @media (max-width: 360px) {
-        .title {
-          font-size: 28px;
-        }
-        .btn-whatsapp {
-          font-size: 13px;
-          padding: 10px 14px;
+          padding: 16px;
         }
       }
     </style>
   </head>
   <body>
-    <!-- Fixed Unmoving Cyber Background -->
-    <div class="bg-layer" aria-hidden="true"></div>
-    <div class="bg-overlay" aria-hidden="true"></div>
+    <!-- 100% Fixed & Clearly Visible Photo Background -->
+    <div class="bg-fixed" id="bgPhoto" aria-hidden="true"></div>
+    <div class="bg-tint" aria-hidden="true"></div>
 
-    <!-- WhatsApp Join Modal Dialog -->
+    <!-- WhatsApp Join Modal Popup -->
     <div id="joinModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalHeading">
       <div class="modal-glass">
         <div class="modal-icon-badge" aria-hidden="true">
@@ -899,10 +775,10 @@
           </svg>
         </div>
         <h2 id="modalHeading" class="modal-title">Connect With Us</h2>
-        <p class="modal-subtitle">Join our official WhatsApp group for instant announcements, APK updates, and builder support.</p>
+        <p class="modal-subtitle">Join our official WhatsApp group for real-time announcements, instant updates, and builder support.</p>
         <div class="modal-actions">
           <a id="whatsappJoinBtn" class="btn-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
               <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8.01 12.27C8.14 12.44 9.76 14.94 12.24 16C12.83 16.26 13.28 16.41 13.64 16.53C14.24 16.72 14.78 16.69 15.21 16.63C15.7 16.56 16.69 16.03 16.9 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 13.99C16.32 13.86 15.12 13.27 14.89 13.19C14.67 13.11 14.51 13.07 14.34 13.31C14.18 13.56 13.72 14.11 13.58 14.27C13.44 14.43 13.3 14.45 13.06 14.33C12.82 14.21 12.03 13.95 11.1 13.12C10.37 12.47 9.88 11.67 9.74 11.43C9.6 11.19 9.73 11.05 9.85 10.93C9.96 10.82 10.1 10.64 10.22 10.5C10.34 10.36 10.38 10.26 10.46 10.1C10.54 9.94 10.5 9.8 10.44 9.68C10.38 9.56 9.92 8.42 9.72 7.95C9.53 7.49 9.34 7.55 9.19 7.54C9.05 7.53 8.89 7.53 8.72 7.53L8.53 7.33Z"/>
             </svg>
             <span>Join WhatsApp Group</span>
@@ -913,25 +789,24 @@
     </div>
 
     <!-- Main Content Wrap -->
-    <main class="wrap blurred" id="mainWrap">
-      <!-- Centered Header -->
-      <header class="top">
-        <div class="logo-wrapper">
-          <div class="logo">
-            <img 
-              src="https://raw.githubusercontent.com/Devile146/Lullu/99eaa8197cb251f631d5f0d3b0e965720a10a961/Icon.jpg" 
-              alt="FT WEB2APK Logo" 
-              onerror="this.onerror=null;this.src='https://github.com/Devile146/Lullu/raw/99eaa8197cb251f631d5f0d3b0e965720a10a961/Icon.jpg';"
-            />
-          </div>
+    <main class="wrap" id="mainWrap">
+      <!-- Centered Header with Icon Logo -->
+      <header class="top-header">
+        <div class="logo-circle">
+          <img 
+            class="logo-img"
+            src="https://raw.githubusercontent.com/Devile146/Lullu/99eaa8197cb251f631d5f0d3b0e965720a10a961/Icon.jpg" 
+            alt="FT Logo" 
+            onerror="this.onerror=null;this.src='https://github.com/Devile146/Lullu/raw/99eaa8197cb251f631d5f0d3b0e965720a10a961/Icon.jpg';"
+          />
         </div>
-        <div class="header-text">
+        <div>
           <h1 class="title">FT WEB2APK</h1>
-          <div class="sub">Professional Web2apk Builder Website → Apk</div>
+          <div class="subtitle">Professional Web2apk Builder Website → Apk</div>
         </div>
       </header>
 
-      <!-- App Details Card -->
+      <!-- App Details Card (Clear Glass) -->
       <section class="card">
         <div class="head">
           <div class="head-left">
@@ -964,7 +839,7 @@
         </div>
       </section>
 
-      <!-- App Icon Card -->
+      <!-- App Icon Card (Clear Glass) -->
       <section class="card">
         <div class="head">
           <div class="head-left">
@@ -1020,7 +895,7 @@
         <button id="retry" class="retry" type="button">Try Again</button>
       </section>
 
-      <!-- Action Button -->
+      <!-- Blank Glassy Generate Button -->
       <button id="generate" class="generate" type="button">Generate APK</button>
 
       <footer class="watermark">
@@ -1032,7 +907,7 @@
       (() => {
         "use strict";
 
-        /* Centralized Configuration */
+        /* Central Configuration */
         const CONFIG = {
           WHATSAPP_GROUP_URL: "https://chat.whatsapp.com/BDdh6Q1YyjpLJaqjjMATyS?s=cl&p=a&mlu=4&ilr=4",
           API_URL: "https://ft-web2apk.ftshehryar10044.workers.dev/api"
@@ -1056,8 +931,7 @@
           bar = $('bar'),
           statusTitle = $('statusTitle'),
           statusText = $('statusText'),
-          download = $('download'),
-          mainWrap = $('mainWrap');
+          download = $('download');
 
         /* WhatsApp Modal Elements */
         const joinModal = $('joinModal'),
@@ -1073,7 +947,7 @@
         const packageOk = (v) => /^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$/.test(v);
         const normalize = (v) => /^https?:\/\//i.test(v.trim()) ? v.trim() : 'https://' + v.trim();
 
-        /* WhatsApp Modal Trigger */
+        /* WhatsApp Modal Operations */
         whatsappJoinBtn.href = CONFIG.WHATSAPP_GROUP_URL;
 
         function openModal() {
@@ -1083,15 +957,10 @@
         function closeModal() {
           joinModal.classList.add('modal-closing');
           joinModal.classList.remove('modal-show');
-
-          if (mainWrap) {
-            mainWrap.classList.remove('blurred');
-          }
-
           setTimeout(() => {
             joinModal.classList.remove('modal-closing');
             joinModal.classList.add('hide');
-          }, 320);
+          }, 240);
         }
 
         modalCancelBtn.addEventListener('click', closeModal);
@@ -1103,10 +972,12 @@
         });
 
         window.addEventListener('DOMContentLoaded', () => {
-          setTimeout(openModal, 80);
+          setTimeout(openModal, 60);
         });
 
-        /* Web2APK Builder Functionality */
+        /* ==================================================
+           WEB2APK BUILDER OPERATIONS
+           ================================================== */
         function setBar(v) {
           progressValue = Math.max(3, Math.min(98, v));
           bar.style.width = progressValue + '%';
@@ -1341,4 +1212,4 @@
       })();
     </script>
   </body>
-</html>
+        </html>
