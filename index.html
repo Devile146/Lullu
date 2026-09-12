@@ -1,144 +1,1198 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#080a0f" />
-  <meta name="description" content="FT WEB2APK — Convert any website into an Android APK in minutes." />
-  <title>FT WEB2APK</title>
-  <link rel="preconnect" href="https://ft-web2apk.ftshehryar10044.workers.dev" crossorigin />
-  <link rel="stylesheet" href="css/main.css" />
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#080a0f" />
+    <title>FT WEB2APK</title>
+    <style>
+      :root {
+        --bg-fallback: #080a0f;
+        --bg-image: url("Back.jp");
+        --glass: rgba(16, 20, 28, 0.70);
+        --glass-elevated: rgba(22, 28, 38, 0.78);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --glass-border-focus: rgba(225, 176, 82, 0.55);
+        --text-primary: #f7f8fb;
+        --text-secondary: #8d98aa;
+        --accent: #e1b052;
+        --accent-soft: rgba(225, 176, 82, 0.12);
+        --accent-gold2: #f4cf7a;
+        --success: #4ed39a;
+        --danger: #ff6675;
+        --wa-green: #25d366;
+        --wa-green-hover: #20bd5a;
+        --wa-glow: rgba(37, 211, 102, 0.28);
+        --shadow: 0 20px 65px rgba(0, 0, 0, 0.45);
+        --blur: 16px;
+      }
 
-  <!-- ============ LIVE VIDEO BACKGROUND ============ -->
-  <!-- The src is set by js/app.js from APP_CONFIG.BACKGROUND_VIDEO_URL -->
-  <video id="bgVideo" class="bg-video" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
-  <div class="bg-overlay" aria-hidden="true"></div>
+      * {
+        box-sizing: border-box;
+      }
 
-  <!-- ============ JOIN MODAL ============ -->
-  <div id="joinModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="joinTitle" hidden>
-    <div class="modal" role="document">
-      <h2 id="joinTitle" class="modal-title">Connect With Us</h2>
-      <p class="modal-sub">Join our WhatsApp group for updates, support and early access.</p>
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        background-color: var(--bg-fallback);
+        color: var(--text-primary);
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        overflow-x: hidden;
+      }
 
-      <a id="whatsappBtn" class="btn-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
-        <svg class="wa-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor" d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2a9.9 9.9 0 0 0-8.6 14.82L2 22l5.32-1.4A9.9 9.9 0 0 0 12.04 22h.01a9.9 9.9 0 0 0 9.9-9.9 9.82 9.82 0 0 0-2.9-7.19Zm-7.01 15.24h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.16.83.85-3.08-.2-.32a8.23 8.23 0 1 1 15.27-4.34 8.23 8.23 0 0 1-8.27 8.24Zm4.52-6.16c-.25-.12-1.47-.72-1.7-.8-.23-.09-.4-.13-.56.12-.17.25-.65.8-.79.96-.15.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23a7.5 7.5 0 0 1-1.38-1.72c-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.15.17-.25.25-.42.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.42h-.48c-.17 0-.43.06-.66.31-.23.25-.87.85-.87 2.07 0 1.22.9 2.4 1.02 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29Z"/>
-        </svg>
-        <span>Join WhatsApp Group</span>
-      </a>
+      /* Viewport-stable Dark Background System */
+      .bg-layer {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        background-color: var(--bg-fallback);
+        background-image: var(--bg-image);
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        z-index: -2;
+        pointer-events: none;
+      }
 
-      <button id="cancelJoin" type="button" class="btn-glass">Cancel</button>
+      .bg-overlay {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        background: radial-gradient(circle at 50% 0%, rgba(225, 176, 82, 0.07), transparent 45%),
+                    linear-gradient(180deg, rgba(8, 10, 15, 0.55) 0%, rgba(8, 10, 15, 0.86) 100%);
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      button, input {
+        font: inherit;
+      }
+
+      /* Main Content Wrap with Smooth Reveal Transition */
+      .wrap {
+        width: min(920px, calc(100% - 28px));
+        margin: auto;
+        padding: 38px 0 24px;
+        opacity: 0.95;
+        transition: opacity 0.4s ease, filter 0.4s ease;
+      }
+
+      .wrap.blurred {
+        filter: blur(4px);
+        user-select: none;
+        pointer-events: none;
+      }
+
+      .top {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .logo {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        overflow: hidden;
+        background: #0b0f16;
+        border: 1px solid rgba(78, 211, 154, 0.4);
+        box-shadow: 0 14px 34px rgba(30, 110, 255, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+      }
+
+      .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .title {
+        font-size: clamp(28px, 6vw, 46px);
+        line-height: 1.05;
+        margin: 0;
+        letter-spacing: -0.04em;
+        font-weight: 800;
+        background: linear-gradient(135deg, #f7f8fb 15%, #bcd4ff 55%, #4ed39a 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .sub {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-top: 6px;
+        letter-spacing: -0.01em;
+      }
+
+      /* Glassmorphism Containers */
+      .card, .progress, .result, .error {
+        background: var(--glass);
+        backdrop-filter: blur(var(--blur));
+        -webkit-backdrop-filter: blur(var(--blur));
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        margin-bottom: 16px;
+        box-shadow: var(--shadow);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .card:hover {
+        border-color: rgba(255, 255, 255, 0.14);
+      }
+
+      .card {
+        padding: 24px;
+      }
+
+      .head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+
+      .head-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .num {
+        width: 30px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        border-radius: 9px;
+        background: var(--accent-soft);
+        border: 1px solid rgba(225, 176, 82, 0.25);
+        color: var(--accent-gold2);
+        font-size: 10px;
+        font-weight: 900;
+      }
+
+      .head h2 {
+        font-size: 16px;
+        margin: 0;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .hint {
+        font-size: 11px;
+        color: var(--text-secondary);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .wide {
+        grid-column: 1 / -1;
+      }
+
+      .field span, .url span {
+        font-size: 11px;
+        color: #aeb7c5;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      input {
+        height: 48px;
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        background: rgba(9, 13, 19, 0.65);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: var(--text-primary);
+        padding: 0 14px;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      input:focus {
+        border-color: var(--glass-border-focus);
+        box-shadow: 0 0 0 3px rgba(225, 176, 82, 0.12);
+      }
+
+      input::placeholder {
+        color: #535e6e;
+      }
+
+      .icons {
+        display: grid;
+        grid-template-columns: 1fr 32px 1.2fr 104px;
+        gap: 14px;
+        align-items: center;
+      }
+
+      .upload {
+        height: 125px;
+        border: 1px dashed #394353;
+        border-radius: 15px;
+        background: rgba(9, 13, 19, 0.55);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        cursor: pointer;
+        padding: 10px;
+        transition: border-color 0.2s, background-color 0.2s;
+      }
+
+      .upload:hover {
+        border-color: rgba(225, 176, 82, 0.65);
+        background: rgba(14, 20, 29, 0.7);
+      }
+
+      .upload input {
+        display: none;
+      }
+
+      .upload b {
+        font-size: 22px;
+        color: var(--accent-gold2);
+        line-height: 1;
+      }
+
+      .upload strong {
+        font-size: 12px;
+        margin-top: 4px;
+      }
+
+      .upload small, .url small {
+        font-size: 10px;
+        color: var(--text-secondary);
+        margin-top: 4px;
+        max-width: 140px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .or {
+        text-align: center;
+        font-size: 10px;
+        color: #5f6978;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+      }
+
+      .url {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .url input {
+        height: 48px;
+      }
+
+      .preview {
+        height: 125px;
+        border: 1px solid var(--glass-border);
+        border-radius: 15px;
+        background: rgba(9, 13, 19, 0.55);
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+
+      .preview span {
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        color: #4e5969;
+        font-weight: 900;
+      }
+
+      .preview img {
+        width: 78px;
+        height: 78px;
+        object-fit: cover;
+        border-radius: 16px;
+      }
+
+      .generate {
+        width: 100%;
+        height: 56px;
+        border: 0;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--accent-gold2), var(--accent));
+        color: #171106;
+        font-size: 14px;
+        font-weight: 900;
+        letter-spacing: -0.01em;
+        cursor: pointer;
+        box-shadow: 0 14px 34px rgba(225, 176, 82, 0.18);
+        transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      }
+
+      .generate:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 40px rgba(225, 176, 82, 0.26);
+      }
+
+      .generate:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      .generate:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .progress {
+        padding: 20px;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 14px;
+        align-items: center;
+      }
+
+      .spinner {
+        width: 30px;
+        height: 30px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: var(--accent-gold2);
+        border-radius: 50%;
+        animation: spin 0.75s linear infinite;
+      }
+
+      .status strong {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .status span {
+        display: block;
+        color: var(--text-secondary);
+        font-size: 11px;
+        margin-top: 4px;
+      }
+
+      .bar {
+        grid-column: 1 / -1;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 99px;
+        overflow: hidden;
+        margin-top: 4px;
+      }
+
+      .bar i {
+        display: block;
+        height: 100%;
+        width: 3%;
+        background: linear-gradient(90deg, var(--accent), var(--accent-gold2));
+        border-radius: 99px;
+        transition: width 0.45s ease;
+      }
+
+      .result {
+        padding: 18px 22px;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 14px;
+        align-items: center;
+        border-color: rgba(78, 211, 154, 0.35);
+      }
+
+      .check {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: rgba(78, 211, 154, 0.12);
+        color: var(--success);
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        font-size: 16px;
+      }
+
+      .result h2 {
+        font-size: 14px;
+        margin: 0 0 4px;
+      }
+
+      .result p {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin: 0;
+      }
+
+      .download {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 11px 18px;
+        border-radius: 11px;
+        background: var(--success);
+        color: #06130c;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 800;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .download:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px rgba(78, 211, 154, 0.3);
+      }
+
+      .error {
+        padding: 18px 22px;
+        border-color: rgba(255, 102, 117, 0.35);
+      }
+
+      .error strong {
+        font-size: 13px;
+        color: #ff8995;
+        display: block;
+      }
+
+      .error p {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin: 6px 0 14px;
+      }
+
+      .retry {
+        border: 1px solid var(--glass-border);
+        background: rgba(17, 23, 33, 0.8);
+        color: var(--text-primary);
+        border-radius: 10px;
+        padding: 9px 15px;
+        font-size: 11px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: background-color 0.2s, border-color 0.2s;
+      }
+
+      .retry:hover {
+        background: rgba(25, 34, 49, 0.9);
+        border-color: rgba(255, 255, 255, 0.18);
+      }
+
+      .watermark {
+        text-align: center;
+        color: #556275;
+        font-size: 10px;
+        padding: 26px 0 6px;
+        letter-spacing: 0.03em;
+      }
+
+      .hide {
+        display: none !important;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ==================================================
+         WHATSAPP POPUP & GLASS MODAL SYSTEM
+         ================================================== */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        background: rgba(4, 6, 10, 0.72);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        display: grid;
+        place-items: center;
+        padding: 18px;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.35s ease, visibility 0.35s ease;
+      }
+
+      .modal-overlay.modal-show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .modal-overlay.modal-closing {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .modal-glass {
+        width: min(420px, calc(100% - 12px));
+        background: var(--glass-elevated);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 24px;
+        padding: 30px 24px 26px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+        text-align: center;
+        transform: scale(0.92) translateY(12px);
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+      }
+
+      .modal-overlay.modal-show .modal-glass {
+        transform: scale(1) translateY(0);
+      }
+
+      .modal-overlay.modal-closing .modal-glass {
+        transform: scale(0.92) translateY(12px);
+      }
+
+      .modal-icon-badge {
+        width: 58px;
+        height: 58px;
+        margin: 0 auto 16px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, rgba(37, 211, 102, 0.22), rgba(37, 211, 102, 0.08));
+        border: 1px solid rgba(37, 211, 102, 0.4);
+        display: grid;
+        place-items: center;
+        color: var(--wa-green);
+        box-shadow: 0 10px 26px var(--wa-glow);
+      }
+
+      .modal-icon-badge svg {
+        width: 32px;
+        height: 32px;
+      }
+
+      .modal-title {
+        font-size: 22px;
+        font-weight: 800;
+        margin: 0 0 8px;
+        letter-spacing: -0.02em;
+        color: var(--text-primary);
+      }
+
+      .modal-subtitle {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin: 0 0 24px;
+        line-height: 1.5;
+        padding: 0 8px;
+      }
+
+      .modal-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .btn-whatsapp {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 50px;
+        padding: 12px 20px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--wa-green), #1fad53);
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 800;
+        box-shadow: 0 12px 30px var(--wa-glow);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      }
+
+      .btn-whatsapp:hover {
+        background: linear-gradient(135deg, var(--wa-green-hover), #1c9d4b);
+        transform: translateY(-2px);
+        box-shadow: 0 16px 36px rgba(37, 211, 102, 0.4);
+      }
+
+      .btn-whatsapp:active {
+        transform: translateY(0);
+      }
+
+      .btn-whatsapp svg {
+        flex-shrink: 0;
+      }
+
+      .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 46px;
+        padding: 10px 18px;
+        border-radius: 14px;
+        border: 1px solid var(--glass-border);
+        background: rgba(255, 255, 255, 0.04);
+        color: #cfd6e4;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+      }
+
+      .btn-cancel:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.18);
+        color: #ffffff;
+      }
+
+      .btn-cancel:active {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      /* ==================================================
+         RESPONSIVE STYLING (360px - 1920px+)
+         ================================================== */
+      @media (max-width: 768px) {
+        .wrap {
+          padding-top: 26px;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .wide {
+          grid-column: auto;
+        }
+        .icons {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+        .or {
+          padding: 2px 0;
+        }
+        .preview {
+          height: 110px;
+        }
+        .result {
+          grid-template-columns: auto 1fr;
+        }
+        .download {
+          grid-column: 1 / -1;
+        }
+        .error .retry {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .logo {
+          width: 52px;
+          height: 52px;
+        }
+        .card {
+          padding: 18px;
+        }
+        .modal-glass {
+          padding: 24px 18px 20px;
+        }
+        .modal-title {
+          font-size: 20px;
+        }
+      }
+
+      @media (max-width: 360px) {
+        .top {
+          gap: 12px;
+        }
+        .logo {
+          width: 46px;
+          height: 46px;
+        }
+        .title {
+          font-size: 26px;
+        }
+        .btn-whatsapp {
+          font-size: 13px;
+          padding: 10px 14px;
+        }
+      }
+
+      /* Accessibility Reduced Motion */
+      @media (prefers-reduced-motion: reduce) {
+        *, ::before, ::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Viewport-Stable Background System with Single Image Back.jp -->
+    <div class="bg-layer" aria-hidden="true"></div>
+    <div class="bg-overlay" aria-hidden="true"></div>
+
+    <!-- WhatsApp Join Modal Dialog -->
+    <div id="joinModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalHeading">
+      <div class="modal-glass">
+        <div class="modal-icon-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8.01 12.27C8.14 12.44 9.76 14.94 12.24 16C12.83 16.26 13.28 16.41 13.64 16.53C14.24 16.72 14.78 16.69 15.21 16.63C15.7 16.56 16.69 16.03 16.9 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 13.99C16.32 13.86 15.12 13.27 14.89 13.19C14.67 13.11 14.51 13.07 14.34 13.31C14.18 13.56 13.72 14.11 13.58 14.27C13.44 14.43 13.3 14.45 13.06 14.33C12.82 14.21 12.03 13.95 11.1 13.12C10.37 12.47 9.88 11.67 9.74 11.43C9.6 11.19 9.73 11.05 9.85 10.93C9.96 10.82 10.1 10.64 10.22 10.5C10.34 10.36 10.38 10.26 10.46 10.1C10.54 9.94 10.5 9.8 10.44 9.68C10.38 9.56 9.92 8.42 9.72 7.95C9.53 7.49 9.34 7.55 9.19 7.54C9.05 7.53 8.89 7.53 8.72 7.53L8.53 7.33Z"/>
+          </svg>
+        </div>
+        <h2 id="modalHeading" class="modal-title">Connect With Us</h2>
+        <p class="modal-subtitle">Join our official WhatsApp group for instant announcements, APK updates, and builder support.</p>
+        <div class="modal-actions">
+          <a id="whatsappJoinBtn" class="btn-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+              <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.89 7 8.5 7 9.71C7 10.93 7.89 12.1 8.01 12.27C8.14 12.44 9.76 14.94 12.24 16C12.83 16.26 13.28 16.41 13.64 16.53C14.24 16.72 14.78 16.69 15.21 16.63C15.7 16.56 16.69 16.03 16.9 15.45C17.1 14.87 17.1 14.38 17.04 14.27C16.97 14.17 16.81 14.11 16.56 13.99C16.32 13.86 15.12 13.27 14.89 13.19C14.67 13.11 14.51 13.07 14.34 13.31C14.18 13.56 13.72 14.11 13.58 14.27C13.44 14.43 13.3 14.45 13.06 14.33C12.82 14.21 12.03 13.95 11.1 13.12C10.37 12.47 9.88 11.67 9.74 11.43C9.6 11.19 9.73 11.05 9.85 10.93C9.96 10.82 10.1 10.64 10.22 10.5C10.34 10.36 10.38 10.26 10.46 10.1C10.54 9.94 10.5 9.8 10.44 9.68C10.38 9.56 9.92 8.42 9.72 7.95C9.53 7.49 9.34 7.55 9.19 7.54C9.05 7.53 8.89 7.53 8.72 7.53L8.53 7.33Z"/>
+            </svg>
+            <span>Join WhatsApp</span>
+          </a>
+          <button id="modalCancelBtn" class="btn-cancel" type="button">Cancel</button>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- ============ MAIN APP ============ -->
-  <main class="wrap" id="appRoot" aria-hidden="true">
-
-    <header class="top">
-      <div class="logo">
-        <img id="brandLogo" alt="FT WEB2APK logo" />
-      </div>
-      <div>
-        <h1 class="title">FT WEB2APK</h1>
-        <div class="sub">Professional Web2APK Builder — Website → APK</div>
-      </div>
-    </header>
-
-    <!-- 01 App Details -->
-    <section class="card">
-      <div class="head">
-        <div class="head-left">
-          <div class="num">01</div>
-          <h2>App Details</h2>
+    <!-- Main Web2APK Application -->
+    <main class="wrap blurred" id="mainWrap">
+      <header class="top">
+        <div class="logo">
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANwAAADcCAYAAAAbWs+BAAABBmlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGCSYAACFgMGhty8kqIgdyeFiMgoBQYkkJhcXMCAGzAyMHy7BiIZGC7r4lGHC3CmpBYnA+kPQFxSBLQcaGQKkC2SDmFXgNhJEHYPiF0UEuQMZC8AsjXSkdhJSOzykoISIPsESH1yQRGIfQfItsnNKU1GuJuBJzUvNBhIRwCxDEMxQxCDO4MTGX7ACxDhmb+IgcHiKwMD8wSEWNJMBobtrQwMErcQYipAP/C3MDBsO1+QWJQIFmIBYqa0NAaGT8sZGHgjGRiELzAwcEVj2oGICxx+VQD71Z0hHwjTGXIYUoEingx5DMkMekCWEYMBgyGDGQCSpUCz8yM2qAABAABJREFUeNrsvXeYZVd15v3be590Y+Wqrs7d6txqdVDOAYksIQQIES0yJgcDHrBBYGPDYMAEm2yCiRJGEqCcc+hWK3TOqXK++Z6w9/7+OLdawp7xzHyD7RkPep77qKr6Vt103r3Wete73iX4f/k/IZHCYq3FWoHAB2GQIkIaCUKRKIm0gA7RgEDgFpahFp+OWnEGdsUZ6MIyEp0l0RKsAZVAIYJOh2y7ZVE+Yk23y+o2WJxXrMpZFvuKHhGggDKWmtVE2lA32LKAKWOYiQ0NK4gxaAFagcZB4GBJUNoSWIWSBmETCsKl3VG0S8gKg68gKyQFEHk0CTBhLYfrCbuaioM1wcFywq6pBocbgnLZgboDDQsJCHyUkkgvwWuM4u1+HLPvAer77oejezC6kb4nDggcMA4Wg7UxjrBYA1o4WGsAwx/+A/H/8ouXSCQCLcAKC1hcK1KgAdbEKMBzHET/RlhyHsmi8yh0rSMqzqPqeNg6IDTkYzJtFeb2WJbPK3BWn+DUXkFf0SGHIgs0DFTqkd1bleytGsZmIgarlpEIylVDHEtCIJSCprVUlMUEAlwJngBPgqfAl+AAzQjC1oWsQTUl2cgSxBFZLcgISeBI8oFDW86lM6OZm9cszzmsLgrmBxpHuRiEqBk4FCY8Va7z6IRkz6hiYLhMtaygGYAJcIRD1gPTHMUM78U5fBfJ7vsI9+/ERmMYQCBBKqxIn5SjFRaN/gPg/gA4BCAB4SJQKG0xNkwvDaXw+tfhrLocVp6H7luHNd1ETYAYvBJep2T1goDTF8JpCxVreiQLhIOLYLhp2DNu7b6BkD1DNXZMR+wfFtRnXHRdQxIBLlgfRAaUAleAryAjwQUhLY6y4EuMD3gg3AThJ6AEWDCRgNCCdjBNiQ0tRAmECkIgaoKOIU4gMWkE9hOcnCHbFrCwU7OkHZYvzLJqbsDSbp8VRQhAHEXzzKRl+6DggeEGz4xGhBMZaLrgGDLKw9Ogxp8k2X8r8Z67aR55DFuvIAFHCBJHYI3FavsHtP0/H+GEgwdgkzSiAbJ9BdllL0CueBnJ3DNpBlniCIgjyNVY0F/n5GU+z1+Z5cwFAd3SEiLYNyJ5+oC2mw+WePpQg4GjTZqTVajWIdIQa7AWAoGjHFzhoD2FcQTWUSCyYD2sBOl6WCmx+FjpYj0DPuBZkAqUk35yRiAihYxjhDZo42DTvBeVRMi4idEh2CbCxlhjsEmCTSJsHEKSQGRBCsgqyGXIZgv0zc9zwoqAM1e6bFzosWqeR15IMYDlseGQh/dpHjkUMjAVQ80D044vBRkTY2Z2YfbcSrTj5+iBJzE6fa+tlOkbbM0fAPef8WWlL8xi/xsv2AqVwsuaNMj53TiLLsFZ/VLMorOw/iKaiQDRhEKZZfMFZ64KeNHaDKd2SHJIdpcs9+yr2cefCtm8o8rUwUkYK0O1CnEFbANHaiQaLTTWEVgJwoL1AqwKwAbg5CHIgR8gvADhZRCZAirIITJeGu2yEgKQWSAAo1p4q4NtgIjAVEHWgLrG1uroZhUb17BRCZIS6BokTdAh6BhhNNIahI0RxiK0wlhFIlXrgXwIAujIklnQwdrFnZy2ocAl63Ks63cJFWJ7zXDnrgo3744YPOrAtAfCx806eHoad+hBomeup7nzFkx9pHXKSbAKSFpIFIhWuml/53K0fwDc/zUvSigEIKzBpoEAFCAVMrZImxIIqncZwZpX4Sx+OXH7BprWxUQNyIR0LxVctk5y+RqHDd0ZDLD5sOHmzWX74LYK+7ZPwuAoVCagPo5rpsGxaCzWxggERgQgUoQ4Xga8IvhtGL+ICHJI10E4DsJRIB2sAEWIoA7UgQRtLDqJMFZjdYR1ZBqRtD5+AUvh4MgAqQXSulipEGQAF2sBIzHGopMQHVYgrCCiCiKsYXSM1XWgnF74NkBgEbYJCKzJYkwHOB7k2mHOIuYuL3DKpiyXbJrLqSs92rKIHeWQ67cl3L69wfgRoNqOCBz8AJzqbuy+3xBu/SFiaAcCiIWPkhprBAYDaKyVIEQLa+Y/Jej+kwKOtGiX6RfSCFQromkB7rzTcNe+FWfx5TSzPTSjCPQUXrfgzI05rjzZ4ZJFPgGCxwcibtxctvc8VGbgiRIMDkO0HewkTiJxdCMFhhBYLEZ4GK8HvE58LwuFInGmAwcfZSLieAIZzWDKU4jGNDacIqlPQTgDSQg44GbTm5NF+hk8z8PLBOQKWTL5IgpBs1EjatRp1upEzRmiZg0daYjjNG3TTTAanAz4eZwgD24OExRRuTa0mwMvi3HzCCORcQjNMoQlZLOBjZokMkSoCIjTQ8w6GCeDNQVwuqGtn/bl/Zxz3gJefGE7567xcbDiocGQnz4Z89BOTTgiQBTx8wK/MY09fCPJzu8T7XkEkhijZJqPGNtiM58b38R/umj3nxJwTosLMY7CGIs1BldmEItfiFr/euyi5xPJPLoRglOnd5nkslN93rjJYb3vsG1S8/0tU9z6UMkOPjoGR4chHECIcWQ8CUnSSoIk2AJWdUC2A7JzkcUlyPZupO8g4xJq/DDJ5G7CmSehfhDqVYRpgGPAL+AUu8l19CC6+nF6++nt6ae9vUh3Z5FsUCCbzSA8iQp88sUcnuOhgCRJqFWbJHGI0k0alZBaLaTSKDFeqzM53WR6YgI7OYaeHCGcmcJOTWDDOnGSVqzC8RC5ArKwEJldhsnNQeczoAJIBFQr2OooNEcgmUHYGMcoMAqrFMbJYGQH+P3QP4fi2vmce+pcrjy/wBnLPDFuNDdui7j2sQZHDmqI2vF8D0fV4dgDmCe+T7T319i4gcLFSImwIcKm8c2g/tNFuv+cNZzIIbEEtk4is8gVL0dteCN2ztk0bQ4T1qBY44wT4aqzA168tIgwhhufjvn5fRW75b4DsHcflEZQ0TSSMlaEKONgZZFEtmFVHzY/D7GgBzW3B6+QxU8qJNMH0ENPEx99gmTiILYxhHAUbnACMtuPXyjiFnvQ7X0IKbDC4juKOGlg4gpKJ5haGdsok8QJUZSkfAtOSrcj0vTYGkhikAIpJK6UCGFQjsDxFdbPYd08jhOgnBwJLgaLNRFeswzNErXyBHamiqkOEZthED7SWYBoW4HsXEpQXIz1FxHJbmx1At08gIkPQ3M8JYKURtgmQSIwskioOsCfB3PnsfC8pbzkoj5efmqeeUUp7jna4NubY5552sBwHsd1CXIGd+oxoqe+TXPHdeiwBtLDERqj9R8A93/sSxDpB6IQmNnjEQd3+csJ1v8Rds7F1LSPMTXo0jzvZMFbz/Y5tc9joAzX3tPg2jtG7MRTh2DoCLJ5FCnHMHEJoxTIAoIerL8AOpfAwhPwF/eS6UqQ4THE0UcItz1A8+BWdGUKdB4v6MZp68Dk5+IFXQipiZpVdL0M8RRxcxriEBPXwERgJCmrIlPKXwhwElAGcBC4rYa3PX4RSizGWiwGIQQkBmtMyoaiOX7XVm8MJRGOj8p0ooIuTLYT5Sp84WIaQFzGhoPE1UGi+jRWOZBdgtu+CbdvE6ZrDWQXoGs19ORu7MxhbHMS7DTYGkJYpBWg29DOfOiaBysX8cIL+7j60h5Omu+I7VMx33y4wd1bDIz54OXIe03E+FbMU9+gvu16rK61ygIPbHKc3LKzWUVKd/4BcP8+4GrxWVZhAYXFOgorIYhiIjzEojPIrH87dsmV1KyLjWaQ3ZaXneHyzrMzrGxXbBkJ+e4dJW6/ediabUehNIS0B8BMYiUgCgjdhQz6SXpPgKWrySyfQ9CvCeKnaGy7h/jxewkPbIVqHRucgNfZj8q0I2UfJoxImgNE4SSmWYFkBmyz9TJa5IBKyRIh0ucPAmElwqZN+bQhLxCCFFAt3vWfc6/CgLRp3WqtTX+HVhQ8ftMpDq0FnaQXstEpuJWPUN2oTB9uthPhZZFCIpsVTGOCZmWIxJTAacfvPhV34QWoRacTFfoJyyXM0AEYO4isTmPtONgKjjZYmSdRXZDrhoUncOrZK3n15T1ctMERIzXN9x6qcfODMY2hAPw8xSDGDN5M87Gvog/fi8AglYs1ulV/tw4l9B8A9+/SN0O0zvXjVRpSaqTRJFhE2zKKGz+CWfE6Gk6OpBaj5le47EzBe85uY1G75L4DCd/67QSP3zds2XsEOXMAYQ9gVA2SdrK6QJLvJ2w/GeauwlvbTnYlZDmAfeq3TD90I+HuPVBLcLPzcXpXooN23KiOLpeJGmNocxiSBirpTs9iVUek+ifsrOJCypQFRDwLwOOvU4EQrV5cK9pZ++wnJv4Z4Kxt/fssw2dbfxswpsU6mhSqdjYCGgQGaxVp8y56DuPkI2UWJ2jDy/aivC60k4Vwhmh6L1FtHJnzcZZsJFhzKSx4PkncTTg4Bod2Y2cOIuJBjJnC2hjPWpB9RJnFMHcei05ZzlWvbONVZ+ZFVLZ8/b6Inz8aY0YCZNZFZULcvTdgH/4cZvwpInxQAkc3SdIjlv9bpWL/F6aUCpBIqXGsQVuwXgFv/Vsw6z+IzSwgLk1Bu+Gisx0++bw8C7tcfrKvxj/cOMOhB6ctB/YjZ/Yj5Dg2riCSIiY/H5tfDB1LkSuW4m8MyHaMwP47aNz3K6LNj5CUIzxvMV7PGkQ+jw7LxFOTmNoIxk5iCUFIBDINYNJihUIbhRT2+NttEKAcrBCtNLIFFNmK4HIWZAqsepYp/+99ajZpNfha/UWh015IGvJadL9pXagWzGzUs8zmaunz02A1Ap2STcg0fDoW4bThZOehcv04Iotu1NHTR9CNMZxcB+76i3DPvJzmnE0kI5J49xgM7MKp7oJ4FC0bKG2ADpL8PGhbTs8Zi3jdq7u48vSCqJU0X7+3zI2PzyCG5pDNZknUMcSeHxI//k1saTCtMVEY22y1Ev4AuH/7ZysErpUtdV4Rf8FleKe/naTvXBplDf4kJ53WxodeojilX3LTgYR/uLHKnlsGLMf24iXPoHUNox2k42D8eajiSSTLl+Gt6yW/SOBXtxM/eC0z912PPjyEI+bhzV+DzhcQzWnM1FGSagWtmwinjJAGyID1MehnT1830yI3IoR0QKgUBAKsbEW2VoQTs1FJqlQNrNw05WtR5WlK2Ypa4p9lVGK2XvMQSmJptvp0sgU4DeY5gLNpxMNYEDHWgpQZUoW0wcoQKxIwAmVdhHWxJkFQR6DRXjtOcSm0L8ZVYKtHCcf3o20Vb+mJFM59LerEV9CMitT3zpDsHUGOHUTVnyGW0wiVxdNthG4X9C+j/dR5vOWKNOIdGW/whbtrbHkoA9UimTaDV91J89G/Jdz5IxAxQipsov8AuH+bNHK2RJYg0/gmjIH2ZQRnfhS9+CqajQLWlug5KeIDz89wyYl5Nh9u8vVrJ9l1V8lydDdesgsdVdJmtNePza+EtnmwogfvnHY6+iL8PXdRvvWHlO95ANvIke1ZjtPeSRJrwvIwtnIEq2tpjSRlGq3SAgtpRdq4hTRCWJE2uh3Z6om1Xo1I0SJECrTZlFGIVo0lfFB5lFfE6BpW19LaTpCmgDgtRYZpRTUQIk2zHZVDSEiSKjZutEreFFzCiDSdtQZLkkLXGKyxIBTC9bAmxkZ1pLGAxGAQIgGRgPXS7EKkaarUYfplZh6qbTVBsQejSyTjA4SlfbjzArIXX0nmvDdTz55AeXsDto7jDh7DhHswZghpJS5FIqcDM2cxc85dxjte0clLTnLEM3tj/uK3NY4844GTI1OM8A5fS3j/l2hOPdk6qJ6rWPndC9qK56bXfwDc/2TFBi6GRCisdBA6xKAI1lyFc9oniLKriSbKiM4Kb78iy+suamPbmOXvfjvDzjsGLDsO4MQjaDuKGyuSYC6mfTGiezlizRzc0326u2L01luo/fzvqGx+BM/pI9u7EZvvIK7PEE3uRDcGsVIiVRaMxojWxY5Mx1LSQiqtpRBYIdPo5mWx2kE6CnSIiZtgE4RMf88KhVXiOOMhcFF+DoOf/p6vwMToKAYbIVUIxsdaiVAhFoE1HsLJovwAawwmiZBCpONEcQ1kgrAGNxZpmqgSrAgxxiDwkU6Q/h0dp9ewSTBRGTF7gIgGx8OqMGAlwkqQdYTwMIZULqaKOME83N61yCAgmtxNPLoTlfMoXvZKnMveQrO4isZjGvP0MEwMQGUI2RjE2iZKdhIFvTBvMSvPm8O7Xpln5TxHXPd4gx/f2CQc7MRrc8iYgzS2fA791D8iaRK7CoxFGINFIG16yGiZRvfjte8fAPc/emIqpYWlRtoIDDhtK8me8XGiZa+lXjXQLLHujBzvudISZFy+dV/EwzdMwTM7rNc4iE7G0Eoh/KXI4mrM/DnYE/O0r22jrbNE+clfUf/OD7E79iIyC/DmbsDVgvrMTprNvZBUwHQglI+QYSr+TfMvBOkFKaQ4fsJaKxBKoVwfpEInuvUzD8fzkNIhjjQmiUFGoCxIB/CRqhPlZrG2jo4qWBoIGaC8TqTyiZMEGycgK2BjMHmEKqC8PEI20HEJk+iUgRQWxymACtBJA5uUEJRAaGwiEWSQKkAKF6Nr6LgOWiMESClBJJikjrURwoIgQBBhbQOQWOum/LBN74s0KUCNB6aCyvTg5k8h1zGPOB6jfPRRHGLaLn8F8dVvx/jLqT8N5skRvMPDRLVBsGMIU0Nai86shEVrOPkSnze9tE0YqfjOb+tsu0+BdfE7m6jBmwgf+CRibD8OikhajJWtNFq3mMw/pJT/C9SIQElFYhIMPpm1b0Se9QEibw3xaERxwQyvuNJh3YlF7nywxM3XT8ChfdYZPYxbjWhmXHD7cfOLiBbPg4295DY5tOXqNO64nvr3vkR8cDdu1yZYsBY1E5KM7yUKj0DSxCUDUqC9OC3QE5VGMUQrHVQtUkFibSstdDyk42G1xugY2ao5hVAY4SFUFuFmENYFDIltIKSHo4oIJYiTGjaZlVLplEEUAcLJIr0iwslhkjImCXG9LoQjSZIypjkBOkyflzVpqigFwsnjOG1YDDqZxuoYR2UQKExcwyQzWB0htGm1WgwYjaWAUAZBBZsYTDgFaFy3D2MjtGwCPmgJxGmvUJJGPxRCG1Ri0H43Tt+JBIVFmHCc2qGHIDAUr3oZwRveR9VdRO1hi/PkNIwN4YxOEusDWBUi1XKS7h5YUuDMi4q84oVFceBAyI9/pqkcKuDNSRBqnOTxr2A2fwVpYlwhSKwgkc7x/t0fAPc/+7RUgKMbONk5uBd/gXjp62nORBBW2XhmwIaXBwwPJ9x7/TGazxy0cmwSpz5F7FhstgNZXIztW4Nd0U7+dGifp0nu+DnVr3+exr7DuO0byMzdQNyIaI4+hagfxRJjHIk1CiU9kBJtYuxsnSOSsAlIAde6CeUhHBeBQMfJcdpezJIdQmGVkwJIKqQq4gbdJMpLafqwjjWTWBkhpI/VqaJezKrHhAJ8lFdE+n0Y6yNsmaQ5CnYqTZtMCjYhbBptVJTWbDqDVO3gdyCsQOgaujmCjacQhGBFqz+n09aBsWmLQNZQ5NBVy8pVbfT357n3nj04TieJmkqZYu2mNaEAK0yaKpsgPaBUI60TI4sQ7Th9q/G6l2MnJoiGNmM7FB1vexPyyrdTqRWo358gD47BcBU5OYpMRjBOgHHbMEEn2Y19nPPyIl0LhHjkXs2x20xawi2wuHuup3H75/EqO5BS0MQ53nv8A+D+Ow+fjs1Y5HPUIs7S5+Nc+DlMsIFoqESmJ2HVq7I4S2psv2uExm3DMDZmlSmjTYSU81FdKzDz56AXt+Fv9Glbpik+dCMTX/5bZrY+g992Ot78k0gaU4RjT2Lqg6mASMmUDNEGoRyMFCl9rnULOfJ32MI0ajmpWt/PpWRG1EQI82z0S0NcykJKkTKTGMADtw+VW4AOS4hkIKUojJuKrlWaGgkrUzJGpo9vtUIWVoPbgWnsx0aTqNYFb57DPgpS2whEDMRY7SOyi5DCRdePgBlHGY1MfBIbY0WzFRlbrKhVCBFCs0JPj8e1d72FE1f3cvXlP+G3N27DyQRoIxBGIbGkjYcWi6pihFW4iYtGo13StDOSCNpwu1cSzFlNXN5P89BDeEuXkP34n+Kc8RImDgvEEzHOwZBo6hhyYhShKwjHB9VN0tlJ5qxOVr4kJ5LxhAO/qtM4msdbJPDDrTRv+xTx4VtBSpQVWFpEFCL9bK3hP5pG+Q8E3LPNXmUVyAStHJw4wQgHddbHcE59N9FMET1WoutsS/cLXCYH9jNxzzHYO4OsVKy1Eut1ITqXIPsXoZd0kVmXpf9EkLufYea/fpKJW+/Eza8lv+gUTCOhPLIfW9+NkHVQmfTitC1qXThIx8WYKAWHbYFGyhYrNtuodlBWY6TAZjrTmjOsg7Qt1rAl0xKtJnfrdxAq5R6CdkRmDbIxhE0GseRA6rSpL1Tr/hZhXAQS67SAml+OdBZCuAPdPIbQPkJGzwLOpLLfWTWKsDplUXMnYGyAqG5BxhEJCkQVYSzWaoTWKeBMjNRglINtDtPfXeQjN81j3tp95B66mksv+RoeOYxSxE7akXjuZfRsbJ+VqhmEiNN/s04qYfMK5LrXo3qX0hzcQzz8OLkXnE3HR/6c6b5VNJ4E93ADfVCTTBxFlCNkPIIRLibTB8vb6TmnKNrm+Ew8FjOzNcLJFgiKk5itX6b+6JdQMsFaH2yIFRJrfZSNsP/BZg/OfxzGzXHBhMGk4Is15E4g+/xPkCz8I6L9Q6D2Mu8NEDwf5cC9h0memUKNhVbUXLSTg7ZlOHNOJlnahV4lWbJR0a/HGfviFzjy9W8QR0voWPMuhI4pH9tC0nwGRAOpuhGmE2PqaXRtUfot5gBsKy2Rsw1rlfZ/aBXmQj4r01IBwipQcZpOKpGCRLSi3HEAOekNC9JPh0+dDGgHqQKM0C29pEIIldZF0k0BLDWWDMrrRDgd2DBI/waZtHfXimwIw3MFv4IkfW0qjyALKu23CaGwNFrs6HPIHyyWBCsbOH6R4ZERnrypG7u4ztmnHOGMU0/kkce247ptoOV/Y8B39id6Fo0tOdbsOWshKVEbfQA5M0h+/qnkeudQueM+Ru6/kLb3/jne+iuItt+POXAYt2sFZs7JJDWJnJ5C1Q9jd1rGjy6wE+sd5pziCb+rl/E7xqiWs/hnfZ5CcT612/8ca0tY1wFjcE1ILP00XTb6/6UIl5760ppUnCXScG+NIVh4PuJFf0HibiDZdZBgcYneN5YoRVsp3TKNOBQjQt8K24YtLMEsWoddOBfm+bSva2fpHHCvu5Zdn/wU5YFx8v0vRfd3E41uwwztxKoGEhdr0l4ZIpWKCQTGmpZg1kW5AVrHrV5XOj9uZ0FjxfGIJbFY4UO+PwVYYxIrTQtg6tnIxuz3bjpXZiwm04MonIZsHMU0dyFFG0bSAkL6WFYIpPDScRWpsbaA6jkZqeZjJu9Dx0fBZkGGxylw0dJOWpFKvgQRVjjIwjqMCRCVBxFxFY0CW0EkrYFZG7dE1Am00kwnctCNKeYv87n6VwGrF9YZ/dkFfPCdv8DNtWPCAlrG/+zzbb2PLTo+/Vodb52kWQO4ookTualsq3cxud6LCUuHCY/eTdDVTnNyGpcRYnpwz/0wYvVVMG7QlTFMUkKZMkr6hPN9/LOnRL5zCbU7emlOeLhL2sgN3E3znvfTnDiAK/JYW0FLM9v3/w/VSf37Y7zVkEWItA4ylty6t6Be/Hc0GkvRBw7Qc/4R+t64n9F991O7eQR3PEZL39p8J2bRauwpp8PGZfiri6w+M8PyyX0MvfVd7PjifyXOLyS7+hXEtTpm353Yyk6MZ5HGxaJaesz0dBbCHhcGzxIc0gkwdpYkaSnthdOKUhKkmwqPhQSZRQTdSOlgkjC9r3RaviMKRGo7gHTTiCR9BD4imIPMrUXoGJtMpZFHeSBckMHx+yJ9jJSp0ZHqRBSWYVU3NAaxtgoqfzzdTdUsDlY4IDwkXlo3qgCZWYIVBYiHUiZStFhX2/JHme2zpTovhPYQoomSeaZHJ1m8pBd/xQAnrVjKPTdOUZouI1UGI1v9O2mRSrTOGpH+Dfnc4PbcqCsQOkPsuBhPI6qTNEv78Np7cL2Q5vhWPvs37+Fzf3U1Tz58O8e27yDY9DKS9SegCwVEGKTtEzkK4VHskdFrYv/gp3vO0wTlDJV9ZaKFa2lf+XKYeppwejdGZnGNbaXb/2lTypaq4jmFqmglLVZKjAEhs2Qv/AB2/YdoHJ3GNu9h4VuGsRu3cPCWvSQ7I2Ts2yi/ENm5EBavQ85fD/3d9C11WV4wlP/+e9z3mb8gKXt0rH0nQruUdj+ADnejlMTYNrAaI2ePN5sW8tDSH6ZgSyNcCi4hzHMUHmmEs7PzaEIhWqmmtT7KyaZ6xdbPpfQwyPRil24KFusgCLAywmqJVF3ITC8mKmEJUsBKL72fdEBYrJJYkUHqBCNirHCwTjfC6cR6WdAeUvjpc5K2VYMapE1aEjKdEiI4SLcDa7No4bTS5AChQcgEa2yqnDEGpGnRIC5GlbEiA02Px/9xmvkv7KC68hivf93pfO4vbsJpB7TTCq4GY6MWw+wgHYmUqaZUGAeTGHQYgzZIa0HWcZIcRqdNdBU3sYM302xa/vxPX8erPjzNzso3WHpON5u3T5Fb7FA7F8SwQvW2kxxZhDOikI0GSVgneaJqByu/oefcuaK/Zx0j91aZmL+ejpf+EHPr+2nuvR4jfDQi9XE5LsAT/640yr9thJuVPbWkWWkkkUjHR+oYMj0UXvS3JCvfTGPfAPnMbaz4yBPU5z3IwK+3Yo4kCCus9Ocglp4IZ56Df+I68ssC1q7OseDAAXZc/VoOfOOr+O3Pp7j6UqpT26kfvg0RTR6PZLQ0uqKlkE/fatmqjdJxlvR7hVUBIsin6aZpTWAJlaaMElAKKd1UD6kCpD8X6XeBl0V67a3mb4RwBKgsqAJIDyVBWoExGWRhLX7PJmLpI4ICymlDmzRSKJVDygArAoRK7fOkVQh3AaprEyLTixUGle8BshDVcWya2goRAE5LohljrULIuXiFleAVkNJBOEVMXAdqCCGQqHSGzQqESAkUtMEqA7KIMAohm4wPDrNo/TzqK45y1tIV/PoH22lUZjBRDYQlkzX09Ad09uYpFCRSNYjCEkm1hK6XMKYBWYvvuSkTbSKM9dKZPqERvkvcmOTVrzyfD31lET858nWeedjn2s+PoBsJ0i3T/eJz4MQCUT5GdnVgcp3pYLAeR4SjmKkG9dLWa4obRz7dtyrD9LYxoplF+BtegWuniQcfS8cCW3W4lTat1f8duUvx7/HHrZSkHowGISTShMi2xbgv+hpx+3rivTvpWb+Zje/bzLaRRxi+yeJPF0nyXdZ2zCc7/2Tk6pMJ5yyhr3gCJ+cdxn/0cx774AdJphI61r2GhmlD778dER4l8r3U99E+9xXaltnrrBllKhierdusVUjHxfGzaCuQjsJYgdapgh4RI4UG4WFkAWQnrt+GUIIk1CAFXvEErNNOFB7CNsaQWFx8DAGxIxC5dvz8yWi/DxMewU4fQwU9iN4zsCqLmXoGHR4E6mDzeKFF+xlMzym4hZXI6hhx+WGMcXDbz0Xm24jCvZjJg9CYQYkZrI0x2gfXx8kuxHeWYOIKzcYWhE3w3BVI6xJFO0nC3RA30rSWaqpg0QppskADa6YhruNQQlfqLDijwcl/VeWChRsZ/fZaytPdnP/8Dcxf3E2hLUtb2xy8ABKjqZUNMzBNxscn2fLIFh59fDOPP/UoEwMTQBGR7USoMqbpo5wGulbi9JNP4nv3PY/vDn6fcG+G37ynwvCRHoJFK6kdvof8sqWc8J1voS84h+HDltqYoDl0DLF3K87Re7ATAxjRwMwfpuN8X/Sqszj085VElYvJLZ2DfewTNB78WxB+S2vZxLH/vtN1//aAazWHXZMqLxJrYe4K/Bf/mMSsIjr4MEuffysnv2MXDz39KEP3VJBhByrTY+WiJdgNZxAsPoUu+pnbsZiOGTj4Jx9n5/e+TdB5LpmlL6E+9AzJyB1oT6C0j0giEvEs4ZHqWMVzbNhatVprfsxKB+llsI6fGtvoGBwP6WbADVo6ToONGoCHKM7F8bsxjTJJPAIiSeVP0kf4fYi2FQiniK5PYpvD4Hiowil4uRXoaAdxeRdWN8GtYU0AziJk2yl4xcWoZJrG1CFMMorMzsfNrwcnJq7vwJSGEVqCSrCOQri9eNnlyEwHOholmdmDadZR2X6cwhKMqWMqO9D1AUQUAzWsqKLUHJRairYhNA5gohGsKaEcUuu+sI6JBxB6ChFrdHUGaHDahhW872uXsvxEy8b2EzBoGuylzlGMMei4HWWL+E4PruhFSoUjGnh0IVjAwLDlrlu38POf/Iw7792M1QleoZO4kTC/O8O1D1/F5vxP2Xtompvel+HQYw3coBPmryNYeAHNzTdi6rtY98X/yoL3v5XdVcH0cJ1K5RDh0Z2w63bk4I7UHjA/ROGcjJi34FTGvv58pkZfTGZ1EbX5K1Qf/CsCQprSQ1idRvX/NCylcAFLXmiaxsLiC2l73leYMQF66B7OvmIPC157L7fds43ppxKUyqK7l1i5cgEdi1fSV9hAPrOKlZnlRE8Pcudb3sXkE4+SX/UaTGYRjf33YesHUEKm3SepWyd1K1WwLVJEtVhCZpUVaR/QConr+VgpSJI4FcJK1VJ3pOSHcLO4fheJcbHSxfE8krCaWgGoVFkihYu0HsYKjF9AFlewshvhZ1fgs5g3sS18hV51F9FkFm78e9S+8g6ad76N5tC9iGg3TnkPevgR7O4fYnf/kGjwUexYExdG4E4QeY3g+Z9Dnv5BwtkXEe28j8r2b6P3P47U7VjRQiAIEWId0jQQSvD/7ZffP8uUAgFCIpUHMkYuuwTvhd9mcrqOqdzG277vcuqfv5X7n3qQY0cPk1cKopRkCgW6Z3XQs2ABvfP7mH/yqfStWcv6zWvwhcf0xAhTE4eZOHaEocPHGRoeZ2xsjLGJCYaGq0xMjjNdnSSvT5E0x7BhAx0P4+IRpK5h9BiiugX17H/Gvfxd9K7uY37lDqqf+hD9e+8k2f8QojGG3n8fsrGf2B5FzB1F7vsh0r8f1d2Fzvdh3AxS+Zg4Rrkc52q4uIbY9Rkmtn6GxtBWrJpE7P8+YjZDxmX8pZsxdgE7538J3Wcz/uB9iP2PIcQYlX7wD34W238z3pkr8OadStA3h55TzqR/xWoyU3BicJijh4cZHR5l/5FhjgweZ3x0jOHJKSZmq0xOThNFZcxUA1UfwDkLqgPZtqD0K6g3X4k87c0Ec5fT7M7Q2b+X8v4/YmbblyjvexinXUzg8dsv4uS//wLz33I3w/ffj/75X6L33g/eCNnll2D2/gJ58jso9k8iS4cR039Atu9m3PFvw40/gK7uQfUPw+gD2OoAunwAWZ2FvB28f1q7+c+3lf+wBfdvfcNSSuRUjJx/PvK8P2G87tF50hree2vA4k1389NHH0ENfYePvO5k3v2607js4hPZtG4ec3p6mbdwPq3JSR589DH+8rZ7+MsnHuZHTz7I0/sPMjg+wVQtpT5TZXh0jIPDkxwaOsaRY/sZGj3I1NQg01PTTE7WmJ6sMTM9Qb0+RSNuEsVNtIuxaYhNA6x2iLgC/fNwX/5jghUvp5q08cZ/jH3lW9l56H6mH74b88wdiNEHEI0hXHoM2dyHl51Adf8b1Uf/HBEPEkU1hI5wbge67Qz8/DOJv/P7lPZ/m2j79xFHP4y446/RP3o33qGbkOvvQc59Pfqf/Rnvvvp8PvG/f5p9f/t/4z73UaKxLThZwp76KqrP+wRj+2+hce+/Q47eRTb5KFK2kM4j5J8fCqAkiTf36y4k/vRncZe/i6o7gZ78KkPfej8b513E0eEx9h+8k+888gg/eOIp7nhqL3t3HeLA4WFGJ5rM1JpMNWOmmiFTlZCpUkhlpsZkJWWqPksjSpG6jTCS6j234Rz4Iv74d3j/G0/nXe+7gIvPXc7qFfO4/PIX8rY3vIqX3/R6/vJvP83+b3+e4I5v4m76U441D+M8h3bHkYt+m8L5H2b47m+T3/d12PsNRONb6P3fRHzxrzDD30FND6OqYzg7jjZjhNlhZGME2d2N7p8m/P/j+e8fGf32k6+dYx0pLcLPEW16LXb9W5ia7vK2G1/O9S//EreOjLDtG59l2/3fZsXyJazduJnZ6SqVcoW5fTN86657+K8/epTvP7iXh/eNMD41y1S1Sq1Ro1pLUe0mjeo09dkKUzMTTIxNsnPXTp7e8SQHRyY4NjnH5NQs07MVmu069WaVZlT/77p11rUqK9uA1BqnB3G2i5PziZf/Ier095LUQ8wDt/Hk7Z/m+E1/jhrcj5M9qGIvVlUR7Vtx+d9i+r8I7kE8WUWJAGt1Kfa624G3/y949e2cfuEF/N67X8v1N1zB6y68iHNXb4T55xIu/hVwK7jv+q/w4Jc/T37fnSjvGHI2QjpHt/Uv5L3n48a+jhvfhs4P43J32hP+v0eN1j/4qI51hG6BqKxErvwQ3uJrqY6t48Z3X8Xll76Q/9w5zF/dcjfP7N3B0WNjTM9M0+g0qTaaNGtV5iYnOHB4gH3HjjA4eIzpmSnmWjG1ZkKt0WDm2FEe2fEAT+/cwb5jw4xNzhBFDUp5gS889XoN18k4+MhD3PPow+w/MsyhI4OMjU0xO1VlZmamZPvWajWmp6dp1OtEUfR/2/rN6j2d2u1oBwIXgWwgzALceZ/AXPxe3LHNzD74Z6xdu473v+N13HDl8/nhV7yEt7/mJq6/6jK+/b0f8O3vfY1t3/08/uE7Ec2diOZh3Nggwh7F5g+z7+HvcNf2bbzlDW/k5quu5H+/9U385FvfzJtf+wIuP38b+z/8J0z89b9hjh8gU8eQyRH8uR/BvOqv0Gf8Nu7ofZj6doyZxdq49B7b5T1cEw5d0mYm54pXU8/O4+r1Z3D9u17Pn978b7zzd76G7U8h44hAekgpMcawZ2qIqU6TqWaThdlpDhw5yP4jBzl0bB+Hp6YZHZthfq7G4aODPD06zP6DBzg4NMR0rYmxFmsMWmu8dxTGsWvn4+x4YhtP7tnPvuNjjIzMMTUzzdxcnampKaq1Kp2si7GOUqkkrUqW3H898eG01X9HjXQ9K+n07b0xPj2M6LgKdfqHqU3V+c1f/GlefONrufrqq/n5G1/Lq1/6AjZvXM6v/dKN/P4bf51jP/k0/Y98iPTY9xCVfeimhkqBvPBVdO79IuGubzN+17fo1n4F3Szh97+bv7zyi/zRz32A37vxb7j24iuhZzP2qT/i3e95E3/wtz9g71e/gBq+D1d/GjN9EKP34cQ02BghO4R9H8DtfS1z6Tq+8Lkf5Y2vfCWvufZyXnP1y7juuhdy3llb2HfeRdx31z08fPhZhmbmmW5M0Wg0mJ6e5uiRo8xMTTEyPMbY6BjjE5McHZ/g2NQMk60Ws/Uah48dY3B4lPFGjXqziUozrLNYX8x3q0opFhaajI+Pc/zkCUZGxjl6fILxkSnGxicZHR1jbGycSqVKs9nEOUeWZb3O6L99H/4+G8fF5T1U7w11J0/T891P3j7/h7+L1RpjLaU843lX8eafupFfefMbef2rvp8XXnEFz79wG2dt3MQZL1jHq6+5gfe89n/l/e/7XW567Zuo7N9O9/HPIu/+e1S3hK50cf2XkO36FN7sw3SOc88P/i+f/b1P8j9+6c18+7a/429e+0Zec16Xyv5vcs/NP2DbT26j/fTdyOZxVPUIZvZphGkh0jOovOD3wU0zcfxR/urP/wO/9Uuv5+rLzudZ527mrG1bed6rns+b3/h6Xnj+WfQn5vj+Ld/hT776VX5w4818+2tf46F77+fA4SMcODLE5NQsM7M1jh07wujkDEdGjzI4Nsrk3DSV+kKJ57M9p3NvbzQ1PUm93mBsdJyR0QnGx8YYHRtlamqK+bk5er0exhi896SUZ7e6v/jE99+u5c678x390j/qO+F/x7eNf9dGuhJvA4hK3q93z4j898+W0+4Xn9i6sI9aY5hKfZKFsV1MtSboTg9w5NBB/u6ff53D23fC3i/gDvwz9sgO0O3y/uH6qK34E7L1b8Jd+k6S9h56+x7g6M77mJ1t87P/4y7e/8e/w6/82s/y/s/dzMee90u895LzueyvX8D73/5qXnvhdtpn/Qy9o3cw89N/p/HwXeh8H9rU8F2HjDYi15xJq5Vz/T/9Bf39W3jzm3+Y73/Ny7ni4gu58NlbcA147dsu5w9v+u+445a/4bFvf5lX/c7H+bU//Sj/5S//nF1PvY9Pffp/Y+feJzl0aITRsQlGJuZonpzlcGOa+qLHeE+91aRardLs1Ol0OqVkW2p67S6tZjupwYnJaeq1GvVGg7HRMSbGJ5mZniXPSx21c8UzvJv/9913v8d9/g4o7z//3T/l15VnN+Fw6qR0p29c/nN5T08v8X/3/30/L6z/3Z46h+9J6dJ7z7Lp/U/v1d99W0sU9rEw80BvT2aXj9y7x4v983Bv3XqB7zY6w2L51dGldm2UuVptH/t2P8jXPnML3/vK16ns+SL2wFdQ3aN4G+BLC7K+6jLqV/4xM8/8G6rt48zseZz9+49x/3e+znv/9N/yO+/6PX7tz36eD73vd7jx+p/j+s1b+PX/8lO869d+lp969hbm13yE3sO3Mv3o3bhhQ+wjhA7xrkm4eCN5p4m/55+x+4l7+e1f/W957bVXs279WhqtNnv2HqTT6fDG172QN33/6/kfb/593v+u9/CW3/0Af/Zf/zNvf81r+O5N3+TYkX3sPXCE40NTzDbbtPqabNu0ns6hE2zbuoF9e/az99BhJienmJyYotVsU6/V6XQ6tDodWq023U6XZqNFtVZjfGKS8YlJGvUGvV6vV1qUUvR6vVLw4r/XmD0L3D/9m6e3T4/u6pTf/F2/Xn7q9Z2Zg6X16pfnlM4ZkM8h1v5iH7ZnrN5T7392T955pP62D/r/52/ZqV46Z5lM+/6L03uP1795+H/e7hL3d54X9Oq/m0/1e26Dk9/7438XlP/4L71QpW/yV3/7wH97x5e+3Qe+j4v39O1/T3m/+v0a5Xf859/6hU/27//5j374/61f7o+/88v/31eW11/v9t/+9d1X/01v8m+/86t/y357T96n/d73b37Xv/v1T/m/sPzv3a886f/6z19+/eH0f/xXnvR/f5/63+3d9+qPv/s9/m95V//9a//2b39f37+zO4997v/Z5f0/893+9w/7f/K3n/y7nvh3ffTf7/X/uL7jZ0r7v+t3/08/9w/97N/t3z90/89/3/89f+f0//T7f9f38f/N//v7Pvf//Tf9v4W98w306D9h33kP+598nKeffJRndu5iYmKMY4ePMTU9xbGjxxkbG2dycoqxsXGmJyeZnp6lXq/R7XaZnp6lUqkwPT3N+Pj4/wW61L+P/x+/uV/V8n/H94/f//WJ//f7/f/x/eO/qf3f9f3/4+9p/8Y//kO/7d/+z5/mR39o7Q/V/1j/47f897f9/n84Pj5e/n/8x3/8P/8P+g9bUjY312MAAAAASUVORK5CYII=" alt="FT WEB2APK logo" />
         </div>
-        <div class="hint">All fields required</div>
-      </div>
-      <div class="grid">
-        <label class="field">
-          <span>App Name</span>
-          <input id="name" placeholder="Your App Name" autocomplete="off" />
-        </label>
-        <label class="field">
-          <span>Package Name</span>
-          <input id="pkg" placeholder="com.example.app" autocomplete="off" />
-        </label>
-        <label class="field">
-          <span>Version</span>
-          <input id="ver" value="1.0.0" />
-        </label>
-        <label class="field">
-          <span>Version Code</span>
-          <input id="code" type="number" min="1" value="1" />
-        </label>
-        <label class="field wide">
-          <span>Website URL</span>
-          <input id="site" type="url" placeholder="https://example.com" autocomplete="url" />
-        </label>
-      </div>
-    </section>
-
-    <!-- 02 App Icon -->
-    <section class="card">
-      <div class="head">
-        <div class="head-left">
-          <div class="num">02</div>
-          <h2>App Icon</h2>
+        <div>
+          <div class="title">FT WEB2APK</div>
+          <div class="sub">Professional Web2apk Builder Website → Apk</div>
         </div>
-        <div class="hint">PNG · JPG · WebP · Max 5MB</div>
-      </div>
-      <div class="icons">
-        <label class="upload">
-          <input id="file" type="file" accept="image/png,image/jpeg,image/webp" />
-          <b>↑</b>
-          <strong>Upload Image</strong>
-          <small id="fileName">Choose icon file</small>
-        </label>
-        <div class="or">OR</div>
-        <label class="url">
-          <span>Image URL</span>
-          <input id="iconUrl" type="url" placeholder="https://example.com/icon.png" />
-        </label>
-        <div class="preview" id="preview">
-          <span>ICON</span>
+      </header>
+
+      <!-- App Details Card -->
+      <section class="card">
+        <div class="head">
+          <div class="head-left">
+            <div class="num">01</div>
+            <h2>App Details</h2>
+          </div>
+          <div class="hint">All fields required</div>
         </div>
-      </div>
-    </section>
+        <div class="grid">
+          <label class="field">
+            <span>App Name</span>
+            <input id="name" placeholder="Your App Name" autocomplete="off" />
+          </label>
+          <label class="field">
+            <span>Package Name</span>
+            <input id="pkg" placeholder="com.example.app" autocomplete="off" />
+          </label>
+          <label class="field">
+            <span>Version</span>
+            <input id="ver" value="1.0.0" />
+          </label>
+          <label class="field">
+            <span>Version Code</span>
+            <input id="code" type="number" min="1" value="1" />
+          </label>
+          <label class="field wide">
+            <span>Website URL</span>
+            <input id="site" type="url" placeholder="https://example.com" autocomplete="url" />
+          </label>
+        </div>
+      </section>
 
-    <!-- Progress -->
-    <section id="progress" class="progress hide" role="status" aria-live="polite">
-      <div class="spinner" aria-hidden="true"></div>
-      <div class="status">
-        <strong id="statusTitle">Building APK…</strong>
-        <span id="statusText">Submitting your app to FT Web2APK.</span>
-      </div>
-      <div class="bar"><i id="bar"></i></div>
-    </section>
+      <!-- App Icon Card -->
+      <section class="card">
+        <div class="head">
+          <div class="head-left">
+            <div class="num">02</div>
+            <h2>App Icon</h2>
+          </div>
+          <div class="hint">PNG · JPG · WebP · Max 5MB</div>
+        </div>
+        <div class="icons">
+          <label class="upload">
+            <input id="file" type="file" accept="image/png,image/jpeg,image/webp" />
+            <b>↑</b>
+            <strong>Upload Image</strong>
+            <small id="fileName">Choose icon file</small>
+          </label>
+          <div class="or">OR</div>
+          <label class="url">
+            <span>Image URL</span>
+            <input id="iconUrl" type="url" placeholder="https://example.com/icon.png" />
+          </label>
+          <div class="preview" id="preview">
+            <span>ICON</span>
+          </div>
+        </div>
+      </section>
 
-    <!-- Result -->
-    <section id="result" class="result hide" role="status" aria-live="polite">
-      <div class="check" aria-hidden="true">✓</div>
-      <div>
-        <h2>APK Ready</h2>
-        <p id="resultText">Your APK is ready.</p>
-      </div>
-      <a id="download" class="download" href="#" target="_blank" rel="noopener noreferrer">Download APK</a>
-    </section>
+      <!-- Build Progress Card -->
+      <section id="progress" class="progress hide">
+        <div class="spinner"></div>
+        <div class="status">
+          <strong id="statusTitle">Building APK…</strong>
+          <span id="statusText">Submitting your app to FT Web2APK.</span>
+        </div>
+        <div class="bar">
+          <i id="bar"></i>
+        </div>
+      </section>
 
-    <!-- Error -->
-    <section id="error" class="error hide" role="alert">
-      <strong>APK Generation Failed</strong>
-      <p id="errorText"></p>
-      <button id="retry" class="retry" type="button">Try Again</button>
-    </section>
+      <!-- Success Result Card -->
+      <section id="result" class="result hide">
+        <div class="check">✓</div>
+        <div>
+          <h2>APK Ready</h2>
+          <p id="resultText">Your APK is ready.</p>
+        </div>
+        <a id="download" class="download" href="#" target="_blank" rel="noopener">Download APK</a>
+      </section>
 
-    <button id="generate" class="generate" type="button">Generate APK</button>
+      <!-- Error Card -->
+      <section id="error" class="error hide">
+        <strong>APK Generation Failed</strong>
+        <p id="errorText"></p>
+        <button id="retry" class="retry" type="button">Try Again</button>
+      </section>
 
-    <footer class="watermark">© 2026 Dev TECHNICAL FAHAD — All Rights Reserved</footer>
-  </main>
+      <!-- Action Button -->
+      <button id="generate" class="generate" type="button">Generate APK</button>
 
-  <script src="js/config.js"></script>
-  <script src="js/app.js" defer></script>
-</body>
-</html>
+      <footer class="watermark">
+        © 2026 Dev TECHNICAL FAHAD All Rights Reserved
+      </footer>
+    </main>
+
+    <script>
+      (() => {
+        "use strict";
+
+        /* ==================================================
+           CENTRAL CONFIGURATION
+           ================================================== */
+        const CONFIG = {
+          WHATSAPP_GROUP_URL: "https://chat.whatsapp.com/BDdh6Q1YyjpLJaqjjMATyS?s=cl&p=a&mlu=4&ilr=4",
+          BACKGROUND_IMAGE: "Back.jp",
+          API_URL: "https://ft-web2apk.ftshehryar10044.workers.dev/api"
+        };
+
+        const $ = (id) => document.getElementById(id);
+
+        /* Main UI Elements */
+        const name = $('name'),
+          pkg = $('pkg'),
+          ver = $('ver'),
+          code = $('code'),
+          site = $('site'),
+          file = $('file'),
+          iconUrl = $('iconUrl'),
+          preview = $('preview'),
+          generate = $('generate'),
+          progress = $('progress'),
+          result = $('result'),
+          error = $('error'),
+          bar = $('bar'),
+          statusTitle = $('statusTitle'),
+          statusText = $('statusText'),
+          download = $('download'),
+          mainWrap = $('mainWrap');
+
+        /* WhatsApp Modal Elements */
+        const joinModal = $('joinModal'),
+          whatsappJoinBtn = $('whatsappJoinBtn'),
+          modalCancelBtn = $('modalCancelBtn');
+
+        let iconData = "",
+          busy = false,
+          pollTimer = null,
+          progressValue = 3;
+
+        /* Helper Functions */
+        const show = (e, v) => e.classList.toggle('hide', !v);
+        const packageOk = (v) => /^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$/.test(v);
+        const normalize = (v) => /^https?:\/\//i.test(v.trim()) ? v.trim() : 'https://' + v.trim();
+
+        /* ==================================================
+           WHATSAPP MODAL POPUP LOGIC
+           ================================================== */
+        whatsappJoinBtn.href = CONFIG.WHATSAPP_GROUP_URL;
+
+        function openModal() {
+          joinModal.classList.add('modal-show');
+        }
+
+        function closeModal() {
+          joinModal.classList.add('modal-closing');
+          joinModal.classList.remove('modal-show');
+
+          // Smooth reveal of main interactive content
+          if (mainWrap) {
+            mainWrap.classList.remove('blurred');
+          }
+
+          setTimeout(() => {
+            joinModal.classList.remove('modal-closing');
+            joinModal.classList.add('hide');
+          }, 320);
+        }
+
+        modalCancelBtn.addEventListener('click', closeModal);
+
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && !joinModal.classList.contains('hide')) {
+            closeModal();
+          }
+        });
+
+        // Initialize popup smoothly on DOM load
+        window.addEventListener('DOMContentLoaded', () => {
+          setTimeout(openModal, 60);
+        });
+
+        /* ==================================================
+           EXISTING WEB2APK BUILDER ENGINE (PRESERVED)
+           ================================================== */
+        function setBar(v) {
+          progressValue = Math.max(3, Math.min(98, v));
+          bar.style.width = progressValue + '%';
+        }
+
+        function reset() {
+          show(result, false);
+          show(error, false);
+          download.removeAttribute('href');
+          setBar(3);
+        }
+
+        function previewImage(src) {
+          preview.innerHTML = '';
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = 'Icon preview';
+          img.onerror = () => {
+            preview.innerHTML = '<span>ICON</span>';
+          };
+          preview.appendChild(img);
+        }
+
+        function dataUri(f) {
+          return new Promise((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = () => resolve(String(r.result));
+            r.onerror = reject;
+            r.readAsDataURL(f);
+          });
+        }
+
+        file.addEventListener('change', async () => {
+          const f = file.files?.[0];
+          if (!f) return;
+          if (!['image/png', 'image/jpeg', 'image/webp'].includes(f.type) || f.size > 5 * 1024 * 1024) {
+            file.value = '';
+            iconData = '';
+            $('fileName').textContent = 'Choose icon file';
+            return alert('Select a PNG, JPG, or WebP image up to 5MB.');
+          }
+          iconData = await dataUri(f);
+          iconUrl.value = '';
+          $('fileName').textContent = f.name;
+          previewImage(iconData);
+        });
+
+        iconUrl.addEventListener('input', () => {
+          const v = iconUrl.value.trim();
+          if (!v) return;
+          iconData = '';
+          previewImage(v);
+        });
+
+        function extractId(d) {
+          for (const k of ['buildId', 'build_id', 'projectId', 'id', 'uuid']) {
+            if (d && typeof d[k] === 'string' && /^[a-f0-9]{8}-[a-f0-9-]{27}$/i.test(d[k])) return d[k];
+          }
+          const s = JSON.stringify(d || {}).match(/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/i);
+          return s ? s[0] : '';
+        }
+
+        function extractUrl(d) {
+          if (!d || typeof d !== 'object') return '';
+          for (const k of ['downloadUrl', 'download_url', 'apkUrl', 'apk_url', 'url']) {
+            if (typeof d[k] === 'string' && /^https?:\/\//i.test(d[k])) return d[k];
+          }
+          return extractUrl(d.data) || extractUrl(d.result);
+        }
+
+        function beginProgress() {
+          let n = 3;
+          setBar(n);
+          clearInterval(pollTimer);
+          pollTimer = setInterval(() => {
+            if (n < 86) {
+              n += n < 35 ? 2 : n < 65 ? 1 : 0.35;
+              setBar(n);
+            }
+          }, 1000);
+        }
+
+        function stopProgress(ok) {
+          clearInterval(pollTimer);
+          if (ok) setBar(100);
+        }
+
+        async function pollStatus(buildId, statusUrl, downloadUrl) {
+          let attempts = 0;
+          while (attempts < 180) {
+            attempts++;
+            await new Promise((r) => setTimeout(r, 3000));
+            try {
+              const u = statusUrl || CONFIG.API_URL + '/status?build_id=' + encodeURIComponent(buildId);
+              const r = await fetch(u, { cache: 'no-store' });
+              const d = await r.json();
+              if (d.ready === true || d.status === 'success') {
+                const finalUrl = d.downloadUrl || downloadUrl;
+                if (finalUrl) {
+                  stopProgress(true);
+                  show(progress, false);
+                  $('resultText').textContent = name.value.trim() + ' is ready to download.';
+                  download.href = finalUrl;
+                  show(result, true);
+                  return true;
+                }
+              }
+              if (d.stage) statusText.textContent = d.stage;
+              if (typeof d.progress === 'number') setBar(d.progress);
+              else setBar(Math.min(90, progressValue + 0.6));
+            } catch {}
+            statusText.textContent = 'APK is still being built. Please keep this page open.';
+          }
+          throw new Error('APK build is taking longer than expected. Please try again shortly.');
+        }
+
+        async function build() {
+          if (busy) return;
+          reset();
+          const n = name.value.trim(),
+            p = pkg.value.trim(),
+            v = ver.value.trim(),
+            c = code.value.trim(),
+            s = normalize(site.value),
+            i = iconData || iconUrl.value.trim();
+
+          if (!n) return alert('Enter App Name.');
+          if (!packageOk(p)) return alert('Enter a valid Package Name, e.g. com.example.app');
+          if (!/^\d+\.\d+\.\d+$/.test(v)) return alert('Version must be like 1.0.0');
+          if (!/^[1-9]\d*$/.test(c)) return alert('Version Code must be a positive number.');
+          try {
+            new URL(s);
+          } catch {
+            return alert('Enter a valid Website URL.');
+          }
+          if (!i) return alert('Upload an icon or enter an Image URL.');
+
+          busy = true;
+          generate.disabled = true;
+          show(progress, true);
+          show(error, false);
+          statusTitle.textContent = 'Building APK…';
+          statusText.textContent = 'Submitting your app to FT Web2APK.';
+          beginProgress();
+
+          try {
+            let response;
+            if (iconData) {
+              const fd = new FormData();
+              fd.append('name', n);
+              fd.append('appName', n);
+              fd.append('package', p);
+              fd.append('packageName', p);
+              fd.append('version', v);
+              fd.append('versionName', v);
+              fd.append('versioncode', c);
+              fd.append('versionCode', c);
+              fd.append('url', s);
+              fd.append('websiteUrl', s);
+
+              const mime = (iconData.match(/^data:(image\/[a-z0-9.+-]+);base64,/i) || [])[1] || 'image/png';
+              const raw = atob(iconData.split(',')[1]);
+              const bytes = new Uint8Array(raw.length);
+              for (let x = 0; x < raw.length; x++) bytes[x] = raw.charCodeAt(x);
+              fd.append('icon', new Blob([bytes], { type: mime }), 'icon.' + (mime === 'image/jpeg' ? 'jpg' : mime === 'image/webp' ? 'webp' : 'png'));
+
+              response = await fetch(CONFIG.API_URL, { method: 'POST', body: fd, cache: 'no-store' });
+            } else {
+              const u = new URL(CONFIG.API_URL);
+              u.searchParams.set('name', n);
+              u.searchParams.set('package', p);
+              u.searchParams.set('version', v);
+              u.searchParams.set('versioncode', c);
+              u.searchParams.set('icon', i);
+              u.searchParams.set('url', s);
+              response = await fetch(u.toString(), { method: 'GET', headers: { Accept: 'application/json' }, cache: 'no-store' });
+            }
+
+            const raw = await response.text();
+            let d = {};
+            try {
+              d = JSON.parse(raw);
+            } catch {}
+
+            if (!response.ok) throw new Error(d.error || d.message || 'API returned HTTP ' + response.status);
+            if (d.status === 'error') throw new Error(d.error || 'Build request failed');
+
+            const id = extractId(d);
+            const direct = extractUrl(d);
+
+            if (!id) {
+              if (direct) {
+                stopProgress(true);
+                show(progress, false);
+                download.href = direct;
+                $('resultText').textContent = n + ' is ready to download.';
+                show(result, true);
+                return;
+              }
+              throw new Error('API did not return a build ID.');
+            }
+
+            statusTitle.textContent = 'Building APK…';
+            statusText.textContent = d.stage || 'Your APK is queued for building.';
+            setBar(typeof d.progress === 'number' ? d.progress : Math.max(8, progressValue));
+            const statusUrl = d.statusUrl || CONFIG.API_URL + '/status?build_id=' + encodeURIComponent(id);
+            await pollStatus(id, statusUrl, direct);
+          } catch (e) {
+            stopProgress(false);
+            show(progress, false);
+            $('errorText').textContent = /failed to fetch|networkerror|load failed/i.test(e.message || '')
+              ? 'Could not connect to FT Web2APK API. Please check the Worker URL and try again.'
+              : (e.message || 'APK generation failed.');
+            show(error, true);
+          } finally {
+            busy = false;
+            generate.disabled = false;
+          }
+        }
+
+        generate.addEventListener('click', build);
+        $('retry').addEventListener('click', build);
+
+        [name, pkg, ver, code, site, iconUrl].forEach((x) =>
+          x.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              build();
+            }
+          })
+        );
+      })();
+    </script>
+  </body>
+            </html>
